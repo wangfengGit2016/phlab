@@ -14,6 +14,8 @@
 
   <modules>
     <module>sys-service</module>
+    <module>lab-service</module>
+    <module>tra-service</module>
   </modules>
 
 
