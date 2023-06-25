@@ -23,7 +23,18 @@
             <version>1.0</version>
             <scope>compile</scope>
         </dependency>
-
+        <dependency>
+            <groupId>com.ylhl</groupId>
+            <artifactId>lab-service</artifactId>
+            <version>1.0</version>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.ylhl</groupId>
+            <artifactId>tra-service</artifactId>
+            <version>1.0</version>
+            <scope>compile</scope>
+        </dependency>
         <dependency>
             <groupId>com.ylhl</groupId>
             <artifactId>core</artifactId>
