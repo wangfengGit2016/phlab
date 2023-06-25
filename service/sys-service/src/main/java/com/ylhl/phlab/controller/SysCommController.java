@@ -92,7 +92,7 @@ public class SysCommController {
     public JSONObject newClass(@RequestBody JSONObject param) {
         JSONObject res = new JSONObject();
         String basePackage=  param.getString("basePackage");
-        if(param.containsKey("tableName")){
+        if(StringUtils.isNotBlank(param.getString("tableName") )){
             String module=  param.getString("module");
             if(StringUtils.isNotBlank(module)){
                 module="."+module;
@@ -105,16 +105,19 @@ public class SysCommController {
 //            ClassUtils.buildServiceImpl(module,basePackage,className,columns);
         }else {
             List<String> tables=coreMapper.showTables();
+            System.out.println(tables);
             tables.forEach(item->{
-                String module=  param.getString("module");
-                if(StringUtils.isNotBlank(module)){
-                    module="."+module;
-                }
-                String className=  ClassUtils.humpToLine(item);
-                List<JSONObject> columns = coreMapper.showColumns(item);
-                ClassUtils.build(module,basePackage,className,item,columns);
+                if(StringUtils.isBlank(param.getString("prefix"))||item.startsWith(param.getString("prefix"))){
+                    String module=  param.getString("module");
+                    if(StringUtils.isNotBlank(module)){
+                        module="."+module;
+                    }
+                    String className=  ClassUtils.humpToLine(item);
+                    List<JSONObject> columns = coreMapper.showColumns(item);
+                    ClassUtils.build(module,basePackage,className,item,columns);
 //                ClassUtils.buildService(module,basePackage);
-//                ClassUtils.buildServiceImpl(module,basePackage,className,columns);
+                ClassUtils.buildServiceImpl(module,basePackage,className,columns);
+                }
             });
         }
 
