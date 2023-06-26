@@ -6,6 +6,7 @@ import com.ylhl.phlab.annotation.Table;
 import com.ylhl.phlab.annotation.TableField;
 import com.ylhl.phlab.config.DataConfig;
 import org.apache.ibatis.jdbc.SQL;
+import org.springframework.core.annotation.AnnotationUtils;
 
 import java.lang.reflect.Field;
 import java.text.SimpleDateFormat;
@@ -27,9 +28,9 @@ public class UpdateBuilder {
         data.put("as",as);
         return this;
     }
-    public UpdateBuilder inner(Class cls,String as,String... ons){
-        Table table= (Table) cls.getAnnotation(Table.class);
-        String tableName =table!=null?table.value():cls.getSimpleName().toLowerCase();
+    public UpdateBuilder inner(Class clazz,String as,String... ons){
+        Table table= AnnotationUtils.findAnnotation(clazz,Table.class);
+        String tableName =table!=null?table.value():clazz.getSimpleName().toLowerCase();
         StringBuffer stringBuffer = new StringBuffer();
         for (String str: ons) {
             stringBuffer.append(" ").append(str.trim()).append(" ");
@@ -39,33 +40,16 @@ public class UpdateBuilder {
         return this;
     }
 
-    public UpdateBuilder like(Boolean flag,String column,String var){
-        if(flag){
-            return like(column,var);
-        }
-        return this;
-    }
-    public UpdateBuilder like(String column,String var){
-        sql.WHERE(column + " like '%"+var+"%'");
+
+
+    public UpdateBuilder set(String column,Object val){
+        data.put("baseNum",data.getIntValue("baseNum")+1);
+        String key = "key"+data.getIntValue("baseNum");
+        data.put(key,val);
+        sql.SET(column +"=#{"+key+"}");
         return this;
     }
 
-    public UpdateBuilder set(String key,Object val){
-        if(val instanceof String){
-            sql.SET(key +"='"+ val+"'");
-        }else {
-            sql.SET(key +"="+ val);
-        }
-        return this;
-    }
-    public UpdateBuilder in(String column, List<String> list){
-        StringBuilder stringBuffer = new StringBuilder();
-        for (String var : list) {
-            stringBuffer.append("'").append(var).append("',");
-        }
-        sql.WHERE(column +" in ("+stringBuffer.substring(0,stringBuffer.lastIndexOf(","))+")");
-        return this;
-    }
 
     public UpdateBuilder set(Object obj){
         try {
@@ -90,30 +74,53 @@ public class UpdateBuilder {
         return this;
     }
 
-    public UpdateBuilder eq(String key,Object val){
-        if(val instanceof String){
-            sql.WHERE(key +"='"+ val+"'");
-        }else {
-            sql.WHERE(key +"="+ val);
+
+    public UpdateBuilder like(Boolean flag,String column,String var){
+        if(flag){
+            return like(column,var);
         }
         return this;
     }
-    public UpdateBuilder gt(String column,Object var){
-        if (var.getClass().isInstance(new Date())){
-            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-            var = sdf.format(var);
-        }
-        sql.WHERE(column+"> '" + var+"'");
+    public UpdateBuilder like(String column,String val){
+        data.put("baseNum",data.getIntValue("baseNum")+1);
+        String key = "key"+data.getIntValue("baseNum");
+        data.put(key,val);
+        sql.WHERE(column + " like CONCAT('%',#{"+key+"},'%')");
         return this;
     }
-    public UpdateBuilder lt(String column,Object var){
-        if (var.getClass().isInstance(new Date())){
-            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-            var = sdf.format(var);
+    public UpdateBuilder in(String column, List<String> list){
+        StringBuilder stringBuffer = new StringBuilder();
+        for (String var : list) {
+            data.put("baseNum",data.getIntValue("baseNum")+1);
+            String key = "key"+data.getIntValue("baseNum");
+            data.put(key,var);
+            stringBuffer.append("#{").append(key).append("},");
         }
-        sql.WHERE(column+"< '" + var+"'");
+        sql.WHERE(column +" in ("+stringBuffer.substring(0,stringBuffer.lastIndexOf(","))+")");
         return this;
     }
+    public UpdateBuilder eq(String column,Object val){
+        data.put("baseNum",data.getIntValue("baseNum")+1);
+        String key = "key"+data.getIntValue("baseNum");
+        data.put(key,val);
+        sql.WHERE(column +"=#{"+key +"}");
+        return this;
+    }
+    public UpdateBuilder gt(String column,Object val){
+        data.put("baseNum",data.getIntValue("baseNum")+1);
+        String key = "key"+data.getIntValue("baseNum");
+        data.put(key,val);
+        sql.WHERE(column + " > #{"+key+"}");
+        return this;
+    }
+    public UpdateBuilder lt(String column,Object val){
+        data.put("baseNum",data.getIntValue("baseNum")+1);
+        String key = "key"+data.getIntValue("baseNum");
+        data.put(key,val);
+        sql.WHERE(column + " < #{"+key+"}");
+        return this;
+    }
+
     public  void edit(Object obj){
         for(Field field:obj.getClass().getDeclaredFields()){
             field.setAccessible(true);
@@ -129,14 +136,15 @@ public class UpdateBuilder {
     }
 
     public  void edit(Class clazz){
-        Table table= (Table) clazz.getAnnotation(Table.class);
+        Table table= AnnotationUtils.findAnnotation(clazz,Table.class);
         String tableName =table!=null?table.value():clazz.getSimpleName().toLowerCase();
         if(data.containsKey("as")){
             sql.UPDATE(tableName+" as "+data.getString("as"));
         }else {
             sql.UPDATE(tableName);
         }
-        mapper.exec(sql.toString());
+        data.put("baseSql",sql.toString());
+        mapper.execObject(data);
     }
 
 }

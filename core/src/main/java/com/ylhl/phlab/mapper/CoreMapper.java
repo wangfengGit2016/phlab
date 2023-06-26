@@ -17,11 +17,14 @@ public interface CoreMapper {
     @UpdateProvider(type= CoreProvider.class, method="updateSelective")
     void updateSelective(Object record);
 
+    @SelectProvider(type= CoreProvider.class, method="execObject")
+    List<JSONObject> execObject(JSONObject data);
+
     @SelectProvider(type= CoreProvider.class, method="exec")
     List<JSONObject> exec(String sql);
 
-    @SelectProvider(type= CoreProvider.class, method="exec")
-    List<String> execListString(String sql);
+    @SelectProvider(type= CoreProvider.class, method="execObject")
+    List<String> execListString(JSONObject data);
 
     @SelectProvider(type= CoreProvider.class, method="count")
     int count(String sql);

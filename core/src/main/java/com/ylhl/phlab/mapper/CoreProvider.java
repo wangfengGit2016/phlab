@@ -1,5 +1,6 @@
 package com.ylhl.phlab.mapper;
 
+import com.alibaba.fastjson.JSONObject;
 import com.ylhl.phlab.annotation.Table;
 import com.ylhl.phlab.annotation.TableField;
 import com.ylhl.phlab.annotation.TableId;
@@ -76,6 +77,11 @@ public class CoreProvider {
 
     public String exec(String sql) {
         return sql;
+    }
+
+    public String execObject(JSONObject sql) {
+
+        return sql.getString("baseSql");
     }
 
     public String count(String sql) {

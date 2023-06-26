@@ -16,7 +16,6 @@ public class InsertBuilder {
 
     CoreMapper mapper;
     DataConfig dataConfig;
-    SQL sql = new SQL();
     SqlSessionTemplate sqlSessionTemplate;
 
     InsertBuilder(){

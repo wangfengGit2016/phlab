@@ -121,12 +121,11 @@ public class SelectBuilder {
         return this;
     }
 
-    public SelectBuilder eq(String column,String var){
-        sql.WHERE(column+"= '" + var+"'");
-        return this;
-    }
-    public SelectBuilder eq(Method column, String var){
-        sql.WHERE(column+"= '" + var+"'");
+    public SelectBuilder eq(String column,String val){
+        data.put("baseNum",data.getIntValue("baseNum")+1);
+        String key = "key"+data.getIntValue("baseNum");
+        data.put(key,val);
+        sql.WHERE(column +"=#{"+key +"}");
         return this;
     }
 
@@ -136,8 +135,11 @@ public class SelectBuilder {
         }
         return this;
     }
-    public SelectBuilder notEq(String column,String var){
-        sql.WHERE(column+"!= '" + var+"'");
+    public SelectBuilder notEq(String column,String val){
+        data.put("baseNum",data.getIntValue("baseNum")+1);
+        String key = "key"+data.getIntValue("baseNum");
+        data.put(key,val);
+        sql.WHERE(column +"!=#{"+key +"}");
         return this;
     }
     public SelectBuilder like(Boolean flag,String column,String var){
@@ -146,8 +148,11 @@ public class SelectBuilder {
         }
         return this;
     }
-    public SelectBuilder like(String column,String var){
-        sql.WHERE(column + " like '%"+var+"%'");
+    public SelectBuilder like(String column,String val){
+        data.put("baseNum",data.getIntValue("baseNum")+1);
+        String key = "key"+data.getIntValue("baseNum");
+        data.put(key,val);
+        sql.WHERE(column + " like CONCAT('%',#{"+key+"},'%')");
         return this;
     }
     public SelectBuilder or(Boolean flag,String column,String var){
@@ -160,18 +165,18 @@ public class SelectBuilder {
         sql.OR().WHERE(column+"= '" + var+"'");
         return this;
     }
-    public SelectBuilder likeLeft(String column,String var){
-        sql.WHERE(column + " like '%"+var+"'");
+    public SelectBuilder likeLeft(String column,String val){
+        data.put("baseNum",data.getIntValue("baseNum")+1);
+        String key = "key"+data.getIntValue("baseNum");
+        data.put(key,val);
+        sql.WHERE(column + " like CONCAT('%',#{"+key+"})");
         return this;
     }
-    public SelectBuilder likeRight(String column,String var){
-        sql.WHERE(column + " like '"+var+"%'");
-        return this;
-    }
-
-    public SelectBuilder between(String column,Date startTime,Date endTime){
-        sql.WHERE(column +" between '"+DateFormatUtils.format(startTime,"yyyy-MM-dd")
-                +"' and '"+DateFormatUtils.format(endTime,"yyyy-MM-dd")+"'");
+    public SelectBuilder likeRight(String column,String val){
+        data.put("baseNum",data.getIntValue("baseNum")+1);
+        String key = "key"+data.getIntValue("baseNum");
+        data.put(key,val);
+        sql.WHERE(column + " like CONCAT(#{"+key+"},'%')");
         return this;
     }
 
@@ -181,11 +186,30 @@ public class SelectBuilder {
         }
         return this;
     }
+    public SelectBuilder between(String column,Date startTime,Date endTime){
+        data.put("baseNum",data.getIntValue("baseNum")+1);
+        String key1 = "key"+data.getIntValue("baseNum");
+        data.put(key1,startTime);
+        String key2 = "key"+data.getIntValue("baseNum");
+        data.put(key2,endTime);
+        sql.WHERE(column +" between #{"+key1+"} and #{"+key2+"}");
+        return this;
+    }
+
+
 
     public SelectBuilder in(Boolean flag,String column,String... vars){
         if(flag){
             return in(column,vars);
         }
+        return this;
+    }
+    public SelectBuilder in(String column,String... vars){
+        StringBuilder stringBuffer = new StringBuilder();
+        for (String var : vars) {
+            stringBuffer.append("'").append(var).append("',");
+        }
+        sql.WHERE(column +" in ("+stringBuffer.substring(0,stringBuffer.lastIndexOf(","))+")");
         return this;
     }
 
@@ -196,19 +220,13 @@ public class SelectBuilder {
         return this;
     }
 
-    public SelectBuilder in(String column,String... vars){
-        StringBuilder stringBuffer = new StringBuilder();
-        for (String var : vars) {
-            stringBuffer.append("'").append(var).append("',");
-        }
-        sql.WHERE(column +" in ("+stringBuffer.substring(0,stringBuffer.lastIndexOf(","))+")");
-        return this;
-    }
-
     public SelectBuilder in(String column,List<String> list){
         StringBuilder stringBuffer = new StringBuilder();
         for (String var : list) {
-            stringBuffer.append("'").append(var).append("',");
+            data.put("baseNum",data.getIntValue("baseNum")+1);
+            String key = "key"+data.getIntValue("baseNum");
+            data.put(key,var);
+            stringBuffer.append("#{").append(key).append("},");
         }
         sql.WHERE(column +" in ("+stringBuffer.substring(0,stringBuffer.lastIndexOf(","))+")");
         return this;
@@ -222,26 +240,27 @@ public class SelectBuilder {
     public SelectBuilder notIn(String column,List<String> list){
         StringBuilder stringBuffer = new StringBuilder();
         for (String var : list) {
-            stringBuffer.append("'").append(var).append("',");
+            data.put("baseNum",data.getIntValue("baseNum")+1);
+            String key = "key"+data.getIntValue("baseNum");
+            data.put(key,var);
+            stringBuffer.append("#{").append(key).append("},");
         }
         sql.WHERE(column +" not in ("+stringBuffer.substring(0,stringBuffer.lastIndexOf(","))+")");
         return this;
     }
 
-    public SelectBuilder gt(String column,Object var){
-        if (var.getClass().isInstance(new Date())){
-            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-            var = sdf.format(var);
-        }
-        sql.WHERE(column+"> '" + var+"'");
+    public SelectBuilder gt(String column,Object val){
+        data.put("baseNum",data.getIntValue("baseNum")+1);
+        String key = "key"+data.getIntValue("baseNum");
+        data.put(key,val);
+        sql.WHERE(column + " > #{"+key+"}");
         return this;
     }
-    public SelectBuilder lt(String column,Object var){
-        if (var.getClass().isInstance(new Date())){
-            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-            var = sdf.format(var);
-        }
-        sql.WHERE(column+"< '" + var+"'");
+    public SelectBuilder lt(String column,Object val){
+        data.put("baseNum",data.getIntValue("baseNum")+1);
+        String key = "key"+data.getIntValue("baseNum");
+        data.put(key,val);
+        sql.WHERE(column + " < #{"+key+"}");
         return this;
     }
 
@@ -281,22 +300,17 @@ public class SelectBuilder {
         sql.ORDER_BY(column+" desc");
         return this;
     }
+
+
     public int count(){
         return mapper.count(this.toString());
     }
 
-    public List<JSONObject> exec(){
-        return mapper.exec(this.toString());
-    }
-
-    public <T> List<T> exec(Class<T> clazz){
-        List<JSONObject> list = mapper.exec(this.toString());
-        return list.stream().map(item-> item.toJavaObject(clazz)).collect(Collectors.toList());
-    }
 
     public <T> JSONObject one(Class<T> clazz){
         select(clazz);
-        List<JSONObject> list = mapper.exec(this.toString());
+        data.put("baseSql",sql.toString());
+        List<JSONObject> list = mapper.execObject(data);
         if(list!=null&&list.size()>0){
             return list.get(0);
         }
@@ -313,19 +327,21 @@ public class SelectBuilder {
 
     public <T> List<String> listString(Class<T> clazz){
         select(clazz);
-        return mapper.execListString(this.toString());
+        data.put("baseSql",sql.toString());
+        return mapper.execListString(data);
     }
 
     public <T> List<JSONObject> listJson(Class<T> clazz){
         select(clazz);
-        List<JSONObject> list = mapper.exec(this.toString());
-        return list;
+        data.put("baseSql",sql.toString());
+        return mapper.execObject(data);
     }
 
 
     public <T> List<T> list(Class<T> clazz){
         select(clazz);
-        List<JSONObject> list = mapper.exec(this.toString());
+        data.put("baseSql",sql.toString());
+        List<JSONObject> list = mapper.execObject(data);
         return list.stream().map(item-> item.toJavaObject(clazz)).collect(Collectors.toList());
     }
 
@@ -333,7 +349,8 @@ public class SelectBuilder {
         select(clazz);
         page.setTotal(mapper.count(this.toString()));
         this.limit((page.current-1)*page.size,page.size);
-        List<JSONObject> list = mapper.exec(this.toString());
+        data.put("baseSql",sql.toString());
+        List<JSONObject> list = mapper.execObject(data);
         page.setRecords(list.stream().map(item->item.toJavaObject(clazz)).collect(Collectors.toList()));
         return page;
     }
