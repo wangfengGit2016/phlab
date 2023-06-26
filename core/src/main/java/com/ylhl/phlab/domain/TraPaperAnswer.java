@@ -18,15 +18,15 @@ public class TraPaperAnswer {
     @TableField(alias = "user_id")
     @Comment("用户id")
     private String userId;
-    @TableField(alias = "paper_id")
+    @TableField(alias = "public_paper_id")
     @Comment("试卷id")
-    private String paperId;
-    @TableField(alias = "paper_name")
+    private String publicPaperId;
+    @TableField(alias = "public_paper_name")
     @Comment("试卷名称")
-    private String paperName;
-    @TableField(alias = "paper_type")
+    private String publicPaperName;
+    @TableField(alias = "public_paper_type")
     @Comment("试卷类型")
-    private String paperType;
+    private String publicPaperType;
     @Comment("得分")
     private Integer score;
     @TableField(alias = "total_score")
@@ -41,9 +41,15 @@ public class TraPaperAnswer {
     @TableField(alias = "question_total")
     @Comment("题目总数")
     private Integer questionTotal;
+    @TableField(alias = "start_time")
+    @Comment("开始答卷时间")
+    private Date startTime;
     @TableField(alias = "submit_time")
     @Comment("提交时间")
     private Date submitTime;
+    @TableField(alias = "time_consuming")
+    @Comment("答卷耗时")
+    private Integer timeConsuming;
     @TableField(alias = "create_id")
     @Comment("创建人id")
     private String createId;

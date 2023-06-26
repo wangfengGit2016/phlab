@@ -15,17 +15,23 @@ public class TraQuestionBak {
     @TableField(alias = "question_bak_id")
     @Comment("")
     private String questionBakId;
-    @TableField(alias = "question_content")
+    @TableField(alias = "question_title")
     @Comment("题干")
-    private String questionContent;
+    private String questionTitle;
     @TableField(alias = "question_type")
     @Comment("题目类型  0单选题 1多选题 2判断题 3主观题")
     private String questionType;
+    @TableField(alias = "question_content")
+    @Comment("选项内容")
+    private String questionContent;
     @Comment("难度 1-5级 1级最简单")
     private String difficult;
     @TableField(alias = "correct_answer")
     @Comment("正确答案")
     private String correctAnswer;
+    @TableField(alias = "public_paper_id")
+    @Comment("所属试卷id")
+    private String publicPaperId;
     @Comment("答案解析")
     private String analysis;
     @TableField(alias = "pic_path")

@@ -15,14 +15,17 @@ public class TraQuestionInfo {
     @TableField(alias = "question_id")
     @Comment("")
     private String questionId;
-    @TableField(alias = "question_content")
+    @TableField(alias = "question_title")
     @Comment("题干")
-    private String questionContent;
+    private String questionTitle;
     @TableField(alias = "question_type")
     @Comment("题目类型  0单选题 1多选题 2判断题 3主观题")
     private String questionType;
+    @TableField(alias = "question_content")
+    @Comment("选项内容")
+    private String questionContent;
     @Comment("难度 1-5级 1级最简单")
-    private String difficult;
+    private Integer difficult;
     @TableField(alias = "correct_answer")
     @Comment("正确答案")
     private String correctAnswer;
@@ -59,6 +62,6 @@ public class TraQuestionInfo {
     @Comment("删除时间")
     private Date deleteTime;
     @Comment("删除状态 0：未删除 1：已删除")
-    private String deleted;
+    private Integer deleted;
 
 }
