@@ -18,11 +18,17 @@ public class TraCourseInfo {
     @TableField(alias = "course_name")
     @Comment("课程名称")
     private String courseName;
-    @TableField(alias = "course_frame")
-    @Comment("学习资料结构, json格式")
-    private String courseFrame;
+    @TableField(alias = "course_cover_path")
+    @Comment("封面图片路径")
+    private String courseCoverPath;
+    @TableField(alias = "exam_name")
+    @Comment("考试名称")
+    private String examName;
+    @TableField(alias = "public_paper_id")
+    @Comment("正式试卷id")
+    private String publicPaperId;
     @Comment("描述")
-    private String describtion;
+    private String description;
     @Comment("发布状态 0未发布 1已发布")
     private String status;
     @TableField(alias = "create_id")

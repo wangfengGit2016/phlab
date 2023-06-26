@@ -8,8 +8,8 @@ import com.ylhl.phlab.annotation.TableField;
 import com.ylhl.phlab.annotation.Comment;
 
 @Data
-@Table("tra_paper_question_bak_rel")
-public class TraPaperQuestionBakRel {
+@Table("tra_paper_question_rel")
+public class TraPaperQuestionRel {
 
     @TableId
     @Comment("")

@@ -29,9 +29,6 @@ public class TraPaperInfo {
     private Integer passSocre;
     @Comment("试卷总分")
     private Integer score;
-    @TableField(alias = "paper_frame")
-    @Comment("试卷框架 json格式")
-    private String paperFrame;
     @TableField(alias = "exam_duration")
     @Comment("考试时长(分钟)")
     private Integer examDuration;

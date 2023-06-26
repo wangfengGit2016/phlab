@@ -21,11 +21,11 @@ public class TraCertificateInfo {
     @TableField(alias = "file_path")
     @Comment("证书附件")
     private String filePath;
-    @TableField(alias = "certificate_type")
-    @Comment("证书类型 1 本系统证书  2 第三方证书")
-    private String certificateType;
+    @TableField(alias = "sign_path")
+    @Comment("签章图片路径")
+    private String signPath;
     @Comment("证书描述")
-    private String describtion;
+    private String description;
     @TableField(alias = "create_id")
     @Comment("创建人id")
     private String createId;
@@ -55,5 +55,4 @@ public class TraCertificateInfo {
     private Date deleteTime;
     @Comment("删除状态 0：未删除 1：已删除")
     private String deleted;
-
 }

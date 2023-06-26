@@ -8,8 +8,8 @@ import com.ylhl.phlab.annotation.TableField;
 import com.ylhl.phlab.annotation.Comment;
 
 @Data
-@Table("tra_stu_stuff_info")
-public class TraStuStuffInfo {
+@Table("tra_course_stuff_info")
+public class TraCourseStuffInfo {
 
     @TableId
     @TableField(alias = "stuff_id")
@@ -27,7 +27,7 @@ public class TraStuStuffInfo {
     @Comment("文章内容")
     private String content;
     @Comment("描述")
-    private String describtion;
+    private String description;
     @TableField(alias = "create_id")
     @Comment("创建人id")
     private String createId;

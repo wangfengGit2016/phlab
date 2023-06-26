@@ -30,6 +30,12 @@ public class TraCourseRecord {
     @TableField(alias = "user_real_name")
     @Comment("用户姓名")
     private String userRealName;
+    @TableField(alias = "exam_name")
+    @Comment("考试名称")
+    private String examName;
+    @TableField(alias = "public_paper_id")
+    @Comment("正式试卷id")
+    private String publicPaperId;
     @TableField(alias = "start_time")
     @Comment("开始学习时间")
     private Date startTime;
