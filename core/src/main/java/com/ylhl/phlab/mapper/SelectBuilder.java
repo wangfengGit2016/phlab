@@ -155,14 +155,12 @@ public class SelectBuilder {
         sql.WHERE(column + " like CONCAT('%',#{"+key+"},'%')");
         return this;
     }
-    public SelectBuilder or(Boolean flag,String column,String var){
-        if(flag){
-            return or(column,var);
-        }
+    public SelectBuilder and(){
+        sql.AND();
         return this;
     }
-    public SelectBuilder or(String column,String var){
-        sql.OR().WHERE(column+"= '" + var+"'");
+    public SelectBuilder or(){
+        sql.OR();
         return this;
     }
     public SelectBuilder likeLeft(String column,String val){
