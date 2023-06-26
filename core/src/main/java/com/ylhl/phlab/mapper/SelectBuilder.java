@@ -205,7 +205,10 @@ public class SelectBuilder {
     public SelectBuilder in(String column,String... vars){
         StringBuilder stringBuffer = new StringBuilder();
         for (String var : vars) {
-            stringBuffer.append("'").append(var).append("',");
+            data.put("baseNum",data.getIntValue("baseNum")+1);
+            String key = "key"+data.getIntValue("baseNum");
+            data.put(key,var);
+            stringBuffer.append("#{").append(key).append("},");
         }
         sql.WHERE(column +" in ("+stringBuffer.substring(0,stringBuffer.lastIndexOf(","))+")");
         return this;

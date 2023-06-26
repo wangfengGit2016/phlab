@@ -8,6 +8,7 @@ import org.apache.ibatis.jdbc.SQL;
 import org.springframework.core.annotation.AnnotationUtils;
 
 import java.lang.reflect.Field;
+import java.util.List;
 
 public class DeleteBuilder {
     DataConfig dataConfig;
@@ -31,6 +32,17 @@ public class DeleteBuilder {
         String key = "key"+data.getIntValue("baseNum");
         data.put(key,val);
         sql.WHERE(column + " like CONCAT('%',#{"+key+"},'%')");
+        return this;
+    }
+    public DeleteBuilder in(String column, List<String> list){
+        StringBuilder stringBuffer = new StringBuilder();
+        for (String var : list) {
+            data.put("baseNum",data.getIntValue("baseNum")+1);
+            String key = "key"+data.getIntValue("baseNum");
+            data.put(key,var);
+            stringBuffer.append("#{").append(key).append("},");
+        }
+        sql.WHERE(column +" in ("+stringBuffer.substring(0,stringBuffer.lastIndexOf(","))+")");
         return this;
     }
     public DeleteBuilder eq(String column,Object val){
