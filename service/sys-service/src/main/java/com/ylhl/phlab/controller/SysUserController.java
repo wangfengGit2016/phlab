@@ -47,8 +47,8 @@ public class SysUserController {
     public JSONObject login(@RequestBody SysUserParam param){
         log.info("{}",param);
         String code = stringRedisTemplate.opsForValue().get(CacheConstants.CAPTCHA_PREFIX + param.getCodeKey());
-        AssertUtil.isNull(code,"验证码已失效");
-        AssertUtil.isFalse(code.equalsIgnoreCase(param.getCode()),"验证码有误");
+//        AssertUtil.isNull(code,"验证码已失效");
+//        AssertUtil.isFalse(code.equalsIgnoreCase(param.getCode()),"验证码有误");
         JSONObject user = new JSONObject();
         user.put("userName",param.getUserName());
         SysUserInfo userInfo=sysUserInfoService.info(user);

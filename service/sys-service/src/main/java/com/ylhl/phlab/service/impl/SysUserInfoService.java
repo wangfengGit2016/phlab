@@ -141,7 +141,10 @@ public class SysUserInfoService  implements IService{
                   .listString(SysMenuInfo.class);
           bean.put("buttonsAuth",buttonsAuth);
           SysRegionInfo regionInfo=CoreBuilder.select().eq("id",bean.getString("regionId")).oneT(SysRegionInfo.class);
-          bean.put("regionName",regionInfo.getRegionName());
+          if(regionInfo!=null){
+              bean.put("regionName",regionInfo.getRegionName());
+          }
+
           bean.remove("password");
           return bean;
       }
