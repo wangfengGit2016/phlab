@@ -5,11 +5,13 @@ import java.util.List;
 
 import cn.hutool.core.util.IdUtil;
 import com.alibaba.fastjson.JSONObject;
+import com.ylhl.phlab.consts.DictConstants;
 import lombok.extern.slf4j.Slf4j;
 import com.ylhl.phlab.service.IService;
 import com.ylhl.phlab.domain.SysOrganInfo;
 import com.ylhl.phlab.mapper.CoreBuilder;
 import com.ylhl.phlab.mapper.Page;
+import org.apache.commons.lang.StringUtils;
 import org.springframework.stereotype.Service;
 
 @Slf4j
@@ -38,6 +40,9 @@ public class SysOrganInfoService  implements IService{
           String id = IdUtil.objectId();
           SysOrganInfo bean = BeanUtil.toBean(data,SysOrganInfo.class);
           bean.setId(id);
+          if (StringUtils.isBlank(bean.getParentId())) {
+              bean.setParentId(DictConstants.ROOT_NODE);
+          }
           res.put("status",CoreBuilder.insert().save(bean));
           res.put("id",bean.getId());
           return res;
@@ -54,6 +59,9 @@ public class SysOrganInfoService  implements IService{
           log.info("{}",data);
           JSONObject res =new JSONObject();
           SysOrganInfo bean = BeanUtil.toBean(data,SysOrganInfo.class);
+          if (StringUtils.isBlank(bean.getParentId())) {
+              bean.setParentId(DictConstants.ROOT_NODE);
+          }
           CoreBuilder.update().edit(bean);
           return res;
       }
