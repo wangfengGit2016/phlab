@@ -31,6 +31,8 @@ public class SysOrganInfo {
     private String fullName;
     @Comment("类型 1地区 2机构  3科室")
     private String type;
+    @Comment("组织机构分级")
+    private String level;
     @Comment("备注")
     private String remark;
     @Comment("状态 1 启用 0停用")

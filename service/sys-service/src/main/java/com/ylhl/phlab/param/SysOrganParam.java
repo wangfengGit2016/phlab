@@ -1,6 +1,5 @@
 package com.ylhl.phlab.param;
 
-import com.ylhl.phlab.annotation.Comment;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
@@ -31,4 +30,7 @@ public class SysOrganParam {
     private String status;
     @ApiModelProperty("类型 1地区 2机构  3科室")
     private String type;
+    @ApiModelProperty("组织机构分级")
+    private String level;
+
 }
