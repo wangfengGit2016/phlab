@@ -58,11 +58,13 @@ public class SysUserInfoService  implements IService{
                   .like(StringUtils.isNotBlank(data.getString("userName")),"user_name", data.getString("userName"))
                   .like(StringUtils.isNotBlank(data.getString("realName")),"real_name", data.getString("realName"))
                   .like(StringUtils.isNotBlank(data.getString("phone")),"phone", data.getString("phone"))
-                  .eq(StringUtils.isNotBlank(data.getString("organId")),"organ_id", data.getString("organId"))
-                  .eq(StringUtils.isNotBlank(data.getString("regionId")),"region_id", data.getString("regionId"))
                   .like(StringUtils.isNotBlank(data.getString("userStatus")),"user_status", data.getString("userStatus"))
                   .between(StringUtils.isNotBlank(data.getString("startTime"))&&StringUtils.isNotBlank(data.getString("endTime"))
                           ,"sui.create_time",data.getDate("startTime"),data.getDate("endTime"))
+                  .eq(StringUtils.isNotBlank(data.getString("organId")),"organ_id", data.getString("organId"))
+                  .or()
+                  .eq(StringUtils.isNotBlank(data.getString("organId")),"region_id", data.getString("organId"))
+                  .and()
                   .desc("sui.create_time")
                   .page(page,SysUserInfo.class);
           return page.toJson();
