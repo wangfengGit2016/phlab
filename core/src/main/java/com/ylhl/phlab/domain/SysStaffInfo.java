@@ -18,6 +18,8 @@ public class SysStaffInfo {
     @TableField(alias = "user_id")
     @Comment("用户id")
     private String userId;
+    @Comment("用户名")
+    private String name;
     @TableField(alias = "staff_phone")
     @Comment("联系方式")
     private String staffPhone;

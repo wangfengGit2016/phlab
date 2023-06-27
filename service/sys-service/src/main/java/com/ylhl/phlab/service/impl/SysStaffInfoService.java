@@ -2,12 +2,15 @@ package com.ylhl.phlab.service.impl;
 
 import cn.hutool.core.bean.BeanUtil;
 import java.util.List;
+
+import cn.hutool.core.util.IdUtil;
 import com.alibaba.fastjson.JSONObject;
 import lombok.extern.slf4j.Slf4j;
 import com.ylhl.phlab.service.IService;
 import com.ylhl.phlab.domain.SysStaffInfo;
 import com.ylhl.phlab.mapper.CoreBuilder;
 import com.ylhl.phlab.mapper.Page;
+import org.apache.commons.lang.StringUtils;
 import org.springframework.stereotype.Service;
 
 @Slf4j
@@ -24,7 +27,9 @@ public class SysStaffInfoService  implements IService{
       public JSONObject list(JSONObject data) {
           log.info("{}",data);
           JSONObject res =new JSONObject();
-          List<SysStaffInfo> list=CoreBuilder.select().list(SysStaffInfo.class);
+          List<SysStaffInfo> list=CoreBuilder.select()
+                  .eq(StringUtils.isNotBlank(data.getString("deptId")),"dept_id",data.getString("deptId"))
+                  .list(SysStaffInfo.class);
           res.put("list", list);
           return res;
       }
@@ -33,7 +38,9 @@ public class SysStaffInfoService  implements IService{
           log.info("{}",data);
           JSONObject res =new JSONObject();
           SysStaffInfo bean = BeanUtil.toBean(data,SysStaffInfo.class);
+          bean.setStaffId(IdUtil.fastSimpleUUID());
           res.put("status",CoreBuilder.insert().save(bean));
+          res.put("id",bean.getStaffId());
           return res;
       }
 
