@@ -39,9 +39,9 @@ public class SysOrganInfo {
     private String deleted;
     @TableField(alias = "create_time")
     @Comment("创建时间")
-    private String createTime;
+    private Date createTime;
     @TableField(alias = "update_time")
     @Comment("更新时间")
-    private String updateTime;
+    private Date updateTime;
 
 }

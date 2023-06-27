@@ -10,6 +10,7 @@ public enum DataTypeEnum {
     INT("int","Integer"),
     VARCHAR("varchar","String"),
     DATETIME("datetime","Date"),
+    TIMESTAMP("timestamp","Date"),
     BLOB("blob","byte[]");
 
     private final String code;
