@@ -31,7 +31,9 @@ public class SysOrganInfoService  implements IService{
       public JSONObject list(JSONObject data) {
           log.info("{}",data);
           JSONObject res =new JSONObject();
-          List<SysOrganInfo> list=CoreBuilder.select().list(SysOrganInfo.class);
+          List<SysOrganInfo> list=CoreBuilder.select()
+                  .eq(StringUtils.isNotBlank(data.getString("type")),"type",data.getString("type"))
+                  .list(SysOrganInfo.class);
           list.sort(Comparator.comparing(SysOrganInfo::getSort));
           res.put("list", list);
           return res;

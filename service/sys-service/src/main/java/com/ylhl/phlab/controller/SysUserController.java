@@ -100,8 +100,8 @@ public class SysUserController {
     @ApiOperation("用户分页")
     @PostMapping(value="/page")
     public JSONObject page(@RequestBody SysUserParam param){
-        Function<SysUserParam, String> getId = SysUserParam::getId;
-        param.setRegionId((String) StpUtil.getSession().get("regionId"));
+//        Function<SysUserParam, String> getId = SysUserParam::getId;
+//        param.setRegionId((String) StpUtil.getSession().get("regionId"));
         return sysUserInfoService.page((JSONObject) JSONObject.toJSON(param));
     }
 
@@ -114,7 +114,7 @@ public class SysUserController {
         JSONObject res = sysUserInfoService.insert((JSONObject) JSONObject.toJSON(param));
         AssertUtil.isNull(param.getRoles(),"请设置用户角色");
         sysRoleInfoService.batchAssign(res.getString("id"),param.getRoles());
-        return new JSONObject();
+        return res;
     }
 
     @ApiOperation("用户编辑")

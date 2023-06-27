@@ -50,7 +50,7 @@ public class SysUserInfoService  implements IService{
               }
           }
           CoreBuilder.select().select("sui.*,sri.full_name fullName,ri.id roleId,ri.role_name roleName").as("sui")
-                  .inner(SysRegionInfo.class,"sri","sri.id=sui.region_id")
+                  .inner(SysOrganInfo.class,"sri","sri.id=sui.region_id")
                   .inner(SysUserRoleRel.class,"urr","sui.id=urr.user_id")
                   .inner(SysRoleInfo.class,"ri","ri.id=urr.role_id")
                   .in(roles.size()>0,"urr.role_id",roles)
@@ -58,15 +58,12 @@ public class SysUserInfoService  implements IService{
                   .like(StringUtils.isNotBlank(data.getString("userName")),"user_name", data.getString("userName"))
                   .like(StringUtils.isNotBlank(data.getString("realName")),"real_name", data.getString("realName"))
                   .like(StringUtils.isNotBlank(data.getString("phone")),"phone", data.getString("phone"))
-                  .like(StringUtils.isNotBlank(data.getString("unit")),"unit", data.getString("unit"))
+                  .like(StringUtils.isNotBlank(data.getString("organId")),"organ_id", data.getString("organId"))
                   .like(StringUtils.isNotBlank(data.getString("userStatus")),"user_status", data.getString("userStatus"))
                   .between(StringUtils.isNotBlank(data.getString("startTime"))&&StringUtils.isNotBlank(data.getString("endTime"))
                           ,"sui.create_time",data.getDate("startTime"),data.getDate("endTime"))
                   .desc("sui.create_time")
                   .page(page,SysUserInfo.class);
-//          page.getRecords().forEach(item->{
-//              item.setPassword(null);
-//          });
           return page.toJson();
       }
 
