@@ -2,6 +2,8 @@ package com.ylhl.phlab.service.impl;
 
 import cn.hutool.core.bean.BeanUtil;
 import java.util.List;
+
+import cn.hutool.core.util.IdUtil;
 import com.alibaba.fastjson.JSONObject;
 import lombok.extern.slf4j.Slf4j;
 import com.ylhl.phlab.service.IService;
@@ -32,8 +34,11 @@ public class SysOrganInfoService  implements IService{
       public JSONObject insert(JSONObject data) {
           log.info("{}",data);
           JSONObject res =new JSONObject();
+          String id = IdUtil.objectId();
           SysOrganInfo bean = BeanUtil.toBean(data,SysOrganInfo.class);
+          bean.setId(id);
           res.put("status",CoreBuilder.insert().save(bean));
+          res.put("id",bean.getId());
           return res;
       }
 

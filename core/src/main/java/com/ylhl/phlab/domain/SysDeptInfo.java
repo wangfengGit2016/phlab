@@ -14,12 +14,12 @@ public class SysDeptInfo {
     @TableId
     @Comment("id")
     private String id;
-    @TableField(alias = "organ_id")
+    @TableField(alias = "parent_id")
     @Comment("机构id")
-    private String organId;
-    @TableField(alias = "organ_name")
+    private String parentId;
+    @TableField(alias = "parent_name")
     @Comment("机构名称")
-    private String organName;
+    private String parentName;
     @TableField(alias = "dept_name")
     @Comment("科室名称")
     private String deptName;
@@ -38,9 +38,9 @@ public class SysDeptInfo {
     private String status;
     @TableField(alias = "create_time")
     @Comment("创建时间")
-    private String createTime;
+    private Date createTime;
     @TableField(alias = "update_time")
     @Comment("更新时间")
-    private String updateTime;
+    private Date updateTime;
 
 }
