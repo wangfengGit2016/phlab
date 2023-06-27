@@ -18,7 +18,7 @@ import javax.annotation.Resource;
 import java.util.Collections;
 import java.util.List;
 
-@Api(tags = "SysRegionController",description = "系统-区域")
+@Api(tags = "SysRegionController",description = "系统-区域（停用）")
 @Slf4j
 @RestController
 @RequestMapping("/sys/region")

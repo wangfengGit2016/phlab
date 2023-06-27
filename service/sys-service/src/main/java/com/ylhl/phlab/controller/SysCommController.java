@@ -97,11 +97,13 @@ public class SysCommController {
             if(StringUtils.isNotBlank(module)){
                 module="."+module;
             }
-            String className=  param.getString("className");
             String tableName=  param.getString("tableName");
+            String className=  ClassUtils.humpToLine(tableName);
+            if(StringUtils.isNotBlank( param.getString("className"))){
+                className=  param.getString("className");
+            }
             List<JSONObject> columns = coreMapper.showColumns(tableName);
             ClassUtils.build(module,basePackage,className,tableName,columns);
-//            ClassUtils.buildService(module,basePackage);
 //            ClassUtils.buildServiceImpl(module,basePackage,className,columns);
         }else {
             List<String> tables=coreMapper.showTables();
@@ -115,8 +117,7 @@ public class SysCommController {
                     String className=  ClassUtils.humpToLine(item);
                     List<JSONObject> columns = coreMapper.showColumns(item);
                     ClassUtils.build(module,basePackage,className,item,columns);
-//                ClassUtils.buildService(module,basePackage);
-                ClassUtils.buildServiceImpl(module,basePackage,className,columns);
+//                    ClassUtils.buildServiceImpl(module,basePackage,className,columns);
                 }
             });
         }

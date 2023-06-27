@@ -16,6 +16,7 @@ import org.springframework.stereotype.Service;
 @Service("SysOrganInfoService")
 public class SysOrganInfoService  implements IService{
 
+
       public JSONObject page(JSONObject data) {
           log.info("{}",data);
           Page<SysOrganInfo> page = new Page<>(data);
@@ -37,7 +38,6 @@ public class SysOrganInfoService  implements IService{
           String id = IdUtil.objectId();
           SysOrganInfo bean = BeanUtil.toBean(data,SysOrganInfo.class);
           bean.setId(id);
-          bean.setParentId(bean.getRegionId());
           res.put("status",CoreBuilder.insert().save(bean));
           res.put("id",bean.getId());
           return res;
@@ -54,7 +54,6 @@ public class SysOrganInfoService  implements IService{
           log.info("{}",data);
           JSONObject res =new JSONObject();
           SysOrganInfo bean = BeanUtil.toBean(data,SysOrganInfo.class);
-          bean.setParentId(bean.getRegionId());
           CoreBuilder.update().edit(bean);
           return res;
       }

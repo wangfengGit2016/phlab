@@ -18,7 +18,7 @@ public class SysStaffInfo {
     @TableField(alias = "user_id")
     @Comment("用户id")
     private String userId;
-    @Comment("用户名")
+    @Comment("员工名")
     private String name;
     @TableField(alias = "staff_phone")
     @Comment("联系方式")
@@ -29,9 +29,9 @@ public class SysStaffInfo {
     @TableField(alias = "office_status")
     @Comment("任职状态 0：在职 1：离职")
     private String officeStatus;
-    @TableField(alias = "dept_id")
-    @Comment("所属科室")
-    private String deptId;
+    @TableField(alias = "organ_id")
+    @Comment("s所属组织")
+    private String organId;
     @Comment("职位")
     private String position;
     @TableField(alias = "entry_time")

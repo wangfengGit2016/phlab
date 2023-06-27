@@ -1,5 +1,6 @@
 package com.ylhl.phlab.param;
 
+import com.ylhl.phlab.annotation.Comment;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
@@ -19,13 +20,15 @@ public class SysOrganParam {
     @ApiModelProperty(value = "父名称",reference = "create")
     private String parentName;
     @ApiModelProperty(value = "机构名称",reference = "page,create")
-    private String organName;
+    private String nodeName;
     @ApiModelProperty(value = "机构编码",reference = "create")
-    private String organCode;
+    private String nodeCode;
     @ApiModelProperty(value = "全称",reference = "create")
     private String fullName;
     @ApiModelProperty(value = "备注",reference = "create")
     private String remark;
     @ApiModelProperty(value = "状态 1 启用 0停用",reference = "create")
     private String status;
+    @ApiModelProperty("类型 1地区 2机构  3科室")
+    private String type;
 }
