@@ -35,16 +35,21 @@ public class SysUserParam{
     private String phone;
     @ApiModelProperty(value = "身份证号",reference = "create,update")
     private String idcard;
-    @ApiModelProperty(value = "工作单位",reference = "create,page,update")
-    private String unit;
+    @ApiModelProperty(value = "机构id")
+    private String organId;
     @ApiModelProperty(value = "所属区域",reference = "create,update")
     private String regionId;
     @ApiModelProperty(value = "用户状态 0冻结 1解冻",reference = "page,disable")
     private String userStatus;
-    @ApiModelProperty(value = "是否超管")
-    private String adminType;
-    @ApiModelProperty(value = "机构id")
-    private String organizationId;
+    @ApiModelProperty("职位")
+    private String position;
+    @ApiModelProperty("入职时间")
+    private String entryTime;
+    @ApiModelProperty("离职时间")
+    private String departTime;
+    @ApiModelProperty("任职状态 0：在职 1：离职")
+    private String officeStatus;
+
 
     @ApiModelProperty(value = "角色集合,字符串list",reference = "create,update")
     private List<String> roles;

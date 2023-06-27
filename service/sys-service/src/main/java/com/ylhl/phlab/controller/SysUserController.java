@@ -58,11 +58,11 @@ public class SysUserController {
         StpUtil.getSession().set("username",userInfo.getUserName());
         StpUtil.getSession().set("password",userInfo.getPassword());
         StpUtil.getSession().set("regionId",userInfo.getRegionId());
+        StpUtil.getSession().set("organId",userInfo.getOrganId());
         JSONObject res = new JSONObject();
         user.put("id",userInfo.getId());
         JSONObject info = sysUserInfoService.detail(user);
         StpUtil.getSession().set("roleCode",info.getString("roleCode"));
-        System.out.println( StpUtil.getSession().get("roleCode"));
         if(AdminTypeEnum.ADMIN.match(info.getString("roleCode"))){
             info.put("permission", Collections.singletonList("admin"));
         }
