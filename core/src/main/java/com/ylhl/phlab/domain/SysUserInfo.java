@@ -1,8 +1,11 @@
 package com.ylhl.phlab.domain;
 
-import com.ylhl.phlab.annotation.*;
 import lombok.Data;
 import java.util.Date;
+import com.ylhl.phlab.annotation.Table;
+import com.ylhl.phlab.annotation.TableId;
+import com.ylhl.phlab.annotation.TableField;
+import com.ylhl.phlab.annotation.Comment;
 
 @Data
 @Table("sys_user_info")
@@ -23,20 +26,29 @@ public class SysUserInfo {
     private String phone;
     @Comment("身份证号")
     private String idcard;
-    @Comment("工作单位")
-    private String unit;
-    @TableField(alias = "region_id")
-    @Comment("所属区域")
-    private String regionId;
     @TableField(alias = "user_status")
-    @Comment("用户状态")
+    @Comment("用户状态 0冻结 1解冻")
     private String userStatus;
     @TableField(alias = "admin_type")
     @Comment("是否超管")
     private String adminType;
-    @TableField(alias = "organization_id")
-    @Comment("机构id")
-    private String organizationId;
+    @TableField(alias = "office_status")
+    @Comment("任职状态 0：在职 1：离职")
+    private String officeStatus;
+    @TableField(alias = "organ_id")
+    @Comment("所属组织")
+    private String organId;
+    @TableField(alias = "region_id")
+    @Comment("所属区域")
+    private String regionId;
+    @Comment("职位")
+    private String position;
+    @TableField(alias = "entry_time")
+    @Comment("入职时间")
+    private String entryTime;
+    @TableField(alias = "depart_time")
+    @Comment("离职时间")
+    private String departTime;
     @Comment("删除状态")
     private String deleted;
     @TableField(alias = "create_time")
@@ -46,10 +58,4 @@ public class SysUserInfo {
     @Comment("更新时间")
     private Date updateTime;
 
-    @TableField(alias = "full_name",ignore = true)
-    private String fullName;
-    @TableField(alias = "role_Id",ignore = true)
-    private String roleId;
-    @TableField(alias = "role_name",ignore = true)
-    private String roleName;
 }

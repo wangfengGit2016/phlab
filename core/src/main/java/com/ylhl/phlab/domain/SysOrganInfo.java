@@ -38,7 +38,7 @@ public class SysOrganInfo {
     @Comment("状态 1 启用 0停用")
     private String status;
     @Comment("排序")
-    private Integer sort;
+    private int sort;
     @Comment("删除状态 0：未删除 1：已删除")
     private String deleted;
     @TableField(alias = "create_time")

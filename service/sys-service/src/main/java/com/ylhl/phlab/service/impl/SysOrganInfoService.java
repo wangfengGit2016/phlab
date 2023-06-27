@@ -1,6 +1,8 @@
 package com.ylhl.phlab.service.impl;
 
 import cn.hutool.core.bean.BeanUtil;
+
+import java.util.Comparator;
 import java.util.List;
 
 import cn.hutool.core.util.IdUtil;
@@ -30,6 +32,7 @@ public class SysOrganInfoService  implements IService{
           log.info("{}",data);
           JSONObject res =new JSONObject();
           List<SysOrganInfo> list=CoreBuilder.select().list(SysOrganInfo.class);
+          list.sort(Comparator.comparing(SysOrganInfo::getSort));
           res.put("list", list);
           return res;
       }
