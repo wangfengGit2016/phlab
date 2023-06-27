@@ -32,5 +32,8 @@ public class SysOrganParam {
     private String type;
     @ApiModelProperty("组织机构分级")
     private String level;
+    @ApiModelProperty("排序")
+    private Integer sort;
+
 
 }
