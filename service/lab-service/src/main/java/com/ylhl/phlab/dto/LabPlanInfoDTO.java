@@ -32,6 +32,7 @@ public class LabPlanInfoDTO extends Page<LabPlanInfoDTO> {
     private String content;
     private String releaseTime;
     private String message;
+    private String needEval;
     private String status;
     private String createId;
     private String createName;

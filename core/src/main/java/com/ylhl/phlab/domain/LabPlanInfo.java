@@ -57,6 +57,9 @@ public class LabPlanInfo {
     @TableField(alias = "message")
     @Comment("反显字段")
     private String message;
+    @TableField(alias = "need_eval")
+    @Comment("评价跳转状态 0：需要评价 1：不需要评价")
+    private String needEval;
     @Comment("发布状态 0：待发布 1：已发布")
     private String status;
     @TableField(alias = "create_id")

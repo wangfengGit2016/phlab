@@ -1,5 +1,6 @@
 package com.ylhl.phlab.dto;
 
+import cn.hutool.json.JSONObject;
 import com.ylhl.phlab.annotation.Comment;
 import com.ylhl.phlab.annotation.Table;
 import com.ylhl.phlab.annotation.TableField;
@@ -8,6 +9,7 @@ import com.ylhl.phlab.mapper.Page;
 import lombok.Data;
 
 import java.util.Date;
+import java.util.List;
 
 @Data
 @Table("lab_data_info")
@@ -56,5 +58,5 @@ public class LabDataInfoDTO extends Page<LabDataInfoDTO> {
     private String deleteName;
     private Date deleteTime;
     private String deleted;
-
+    private List<JSONObject> fileList;
 }
