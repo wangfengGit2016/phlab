@@ -100,6 +100,13 @@ public class LabPlanInfoService implements IService {
         List<JSONObject> siteList = (List<JSONObject>) data.get("siteList");
         bean.setSiteTotal(siteList.size());
         bean.setReleaseTime(year + "年" + cal.get(Calendar.MONTH) + "月" + cal.get(Calendar.DAY_OF_MONTH) + "日");
+
+        if (bean.getStatus().equals("1")) {
+            //已经发布
+            bean.setNeedEval("0");
+        }else{
+            bean.setNeedEval("1");
+        }
         res.put("status", CoreBuilder.insert().save(bean));
         //往计划附件表中存数据
         List<JSONObject> fileList = (List<JSONObject>) data.get("fileList");
