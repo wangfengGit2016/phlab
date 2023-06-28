@@ -4,8 +4,10 @@ import cn.dev33.satoken.stp.StpUtil;
 import cn.hutool.core.bean.BeanUtil;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
+import cn.hutool.core.util.IdUtil;
 import cn.hutool.core.util.ObjectUtil;
 import com.alibaba.fastjson.JSONObject;
 import com.ylhl.phlab.constant.LabConstant;
@@ -16,6 +18,7 @@ import com.ylhl.phlab.service.IService;
 import com.ylhl.phlab.mapper.CoreBuilder;
 import com.ylhl.phlab.mapper.Page;
 import org.apache.commons.lang.StringUtils;
+import org.jsoup.select.Evaluator;
 import org.springframework.stereotype.Service;
 
 @Slf4j
@@ -105,6 +108,9 @@ public class LabDataInfoService implements IService {
         //去数据文件关联表中拿附件信息
         List<LabDataFileRel> dataFileList = CoreBuilder.select().eq("business_id", data.getString("dataId")).list(LabDataFileRel.class);
         bean.put("dataFileList", dataFileList);
+        //TODO 评价附件里去拿评价数据
+        List<LabDataEvalDetail> dataEvalDetailList = CoreBuilder.select().eq("data_id", data.getString("dataId")).list(LabDataEvalDetail.class);
+        bean.put("dataEvalDetailList", dataEvalDetailList);
         return bean;
     }
 
@@ -157,9 +163,18 @@ public class LabDataInfoService implements IService {
         JSONObject res = new JSONObject();
         LabDataInfo bean = BeanUtil.toBean(data,LabDataInfo.class);
         bean.setEvalStatus(LabConstant.EVAL_STATUS_YES);
-        res.put("status",CoreBuilder.insert().save(bean));
+        //TODO 待复查
+        CoreBuilder.update().edit(bean);
         //查看所有数据是否全都评价完成
         LabDataInfo labDataInfo = CoreBuilder.select().eq("data_id", data.getString("dataId")).oneT(LabDataInfo.class);
+        //往评价记录表里存数据
+        LabDataEvalDetail evalDetail = BeanUtil.toBean(data,LabDataEvalDetail.class);
+        evalDetail.setPlanId(labDataInfo.getPlanId());
+        evalDetail.setEvalId((String) StpUtil.getLoginId());
+        //TODO 评价人的姓名
+        evalDetail.setEvalTime(new Date());
+        evalDetail.setDataEvalId(IdUtil.fastSimpleUUID());
+        CoreBuilder.insert().save(evalDetail);
         List<LabDataInfo> dataInfoList = CoreBuilder.select().eq("plan_id", labDataInfo.getPlanId()).list(LabDataInfo.class);
         int flag=0;
         for (LabDataInfo dataInfo : dataInfoList) {
@@ -172,6 +187,18 @@ public class LabDataInfoService implements IService {
         if (flag==0){
             CoreBuilder.update().eq("plan_id", labDataInfo.getPlanId()).set("need_eval",LabConstant.NEED_EVAL_NOT_NEED).edit(LabPlanInfo.class);
         }
+        //如果该考不通过 将数据保留到补考记录表中
+        LabDataFailInfo failInfo = BeanUtil.toBean(labDataInfo,LabDataFailInfo.class);
+        failInfo.setHistoryDataId(IdUtil.fastSimpleUUID());
+        CoreBuilder.insert().save(failInfo);
+        //往计划附件表中存数据
+        List<LabDataFileRel> list = CoreBuilder.select().eq("data_id", data.getString("dataId")).list(LabDataFileRel.class);
+        ArrayList<JSONObject> failList = new ArrayList<>();
+        list.forEach(s ->{
+            s.setBusinessId(failInfo.getHistoryDataId());
+            failList.add((JSONObject) JSONObject.toJSON(s));
+        });
+        CoreBuilder.insert().saveBatch(failList, new LabDataFileRel());
         return res;
     }
 }
