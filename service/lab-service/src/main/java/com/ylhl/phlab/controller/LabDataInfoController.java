@@ -30,25 +30,25 @@ public class LabDataInfoController {
 
     @ApiOperation("检测数据上报")
     @PostMapping(value = "/report")
-    public JSONObject report(@RequestBody LabPlanInfoDTO param) {
+    public JSONObject report(@RequestBody LabDataInfoDTO param) {
         return labDataInfoService.report((JSONObject) JSONObject.toJSON(param));
     }
 
     @ApiOperation("检测数据补考")
     @PostMapping(value = "/repair")
-    public JSONObject repair(@RequestBody LabPlanInfoDTO param) {
+    public JSONObject repair(@RequestBody LabDataInfoDTO param) {
         return labDataInfoService.repair((JSONObject) JSONObject.toJSON(param));
     }
 
     @ApiOperation("检测数据领取样本")
     @PostMapping(value = "/receive")
-    public JSONObject receive(@RequestBody LabPlanInfoDTO param) {
+    public JSONObject receive(@RequestBody LabDataInfoDTO param) {
         return labDataInfoService.receive((JSONObject) JSONObject.toJSON(param));
     }
 
     @ApiOperation("检测数据获取上次填写记录")
     @PostMapping(value = "/detailByBefore")
-    public JSONObject detailByBefore(@RequestBody LabPlanInfoDTO param) {
+    public JSONObject detailByBefore(@RequestBody LabDataInfoDTO param) {
         return labDataInfoService.detailByBefore((JSONObject) JSONObject.toJSON(param));
     }
 
