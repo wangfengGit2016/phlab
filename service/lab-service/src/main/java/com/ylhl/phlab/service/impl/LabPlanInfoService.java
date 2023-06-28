@@ -261,7 +261,7 @@ public class LabPlanInfoService implements IService {
 
     public JSONObject detail(JSONObject data) {
         log.info("{}", data);
-        JSONObject res = new JSONObject();
+
         JSONObject bean = CoreBuilder.select().eq("plan_id", data.getString("planId")).one(LabPlanInfo.class);
         String message = bean.getString("message");
         JSONObject jsonObject = JSON.parseObject(message);
@@ -272,8 +272,8 @@ public class LabPlanInfoService implements IService {
         //去计划文件关联表中拿附件信息
         List<LabPlanFileRel> fileList = CoreBuilder.select().eq("plan_id", data.getString("planId")).list(LabPlanFileRel.class);
         bean.put("fileList", fileList);
-        res.put("data", bean);
-        return res;
+
+        return bean;
     }
 
     public JSONObject revoke(JSONObject data) {

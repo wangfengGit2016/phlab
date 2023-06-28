@@ -141,4 +141,6 @@ public class LabDataInfoService implements IService {
         res.put("data", bean);
         return res;
     }
+
+
 }
