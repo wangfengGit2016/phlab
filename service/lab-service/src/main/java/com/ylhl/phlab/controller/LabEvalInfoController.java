@@ -31,4 +31,11 @@ public class LabEvalInfoController {
         return labPlanInfoService.summaryPage((JSONObject) JSONObject.toJSON(param));
     }
 
+    @ApiOperation("在线评价分页")
+    @PostMapping(value = "/page")
+    public JSONObject page(@RequestBody LabDataInfoDTO param) {
+        return labDataInfoService.page((JSONObject) JSONObject.toJSON(param));
+    }
+
+
 }

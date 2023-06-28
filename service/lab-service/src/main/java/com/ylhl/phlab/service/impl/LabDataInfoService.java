@@ -8,13 +8,10 @@ import java.util.List;
 
 import cn.hutool.core.util.ObjectUtil;
 import com.alibaba.fastjson.JSONObject;
-import com.ylhl.phlab.domain.LabDataFileRel;
-import com.ylhl.phlab.domain.LabPlanFileRel;
-import com.ylhl.phlab.domain.LabPlanInfo;
+import com.ylhl.phlab.domain.*;
 import com.ylhl.phlab.utils.AssertUtil;
 import lombok.extern.slf4j.Slf4j;
 import com.ylhl.phlab.service.IService;
-import com.ylhl.phlab.domain.LabDataInfo;
 import com.ylhl.phlab.mapper.CoreBuilder;
 import com.ylhl.phlab.mapper.Page;
 import org.apache.commons.lang.StringUtils;
@@ -95,10 +92,18 @@ public class LabDataInfoService implements IService {
 
     public JSONObject detail(JSONObject data) {
         log.info("{}", data);
-        JSONObject res = new JSONObject();
-        JSONObject bean = CoreBuilder.select().eq("data_id", data.getString("dataId")).one(LabDataInfo.class);
-        res.put("data", bean);
-        return res;
+        JSONObject dataPlan = CoreBuilder.select()
+                .eq("data_id", data.getString("dataId")).one(LabDataInfo.class);
+
+        JSONObject bean = CoreBuilder.select()
+                .eq("plan_id", dataPlan.getString("planId")).one(LabPlanInfo.class);
+        //去计划文件关联表中拿附件信息
+        List<LabPlanFileRel> fileList = CoreBuilder.select().eq("plan_id",dataPlan.getString("planId")).list(LabPlanFileRel.class);
+        bean.put("fileList", fileList);
+        //去数据文件关联表中拿附件信息
+        List<LabDataFileRel> dataFileList = CoreBuilder.select().eq("business_id", data.getString("dataId")).list(LabDataFileRel.class);
+        bean.put("dataFileList", dataFileList);
+        return bean;
     }
 
     public JSONObject repair(JSONObject data) {
