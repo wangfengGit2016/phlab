@@ -24,6 +24,11 @@ public class LabPlanSiteRel {
     @TableField(alias = "site_name")
     @Comment("地区名称")
     private String siteName;
+    @TableField(alias = "parent_id")
+    @Comment("上级节点")
+    private String parentId;
+    @Comment("排序")
+    private int sort;
     @TableField(alias = "create_id")
     @Comment("创建人id")
     private String createId;
@@ -33,5 +38,8 @@ public class LabPlanSiteRel {
     @TableField(alias = "create_time")
     @Comment("创建时间")
     private Date createTime;
+
+
+
 
 }
