@@ -40,7 +40,7 @@ public class LabPlanInfoService implements IService {
         CoreBuilder.select()
                 .like(StringUtils.isNotBlank(data.getString("docNumber")), "doc_number", data.getString("docNumber"))
                 .like(StringUtils.isNotBlank(data.getString("title")), "title", data.getString("title"))
-                .eq(StringUtils.isNotBlank(data.getString("deptId")), "dept_id", data.getString("deptId"))
+                .like(StringUtils.isNotBlank(data.getString("deptName")), "dept_name", data.getString("deptName"))
                 .like(StringUtils.isNotBlank(data.getString("planUserName")), "plan_user_name", data.getString("planUserName"))
                 .eq(StringUtils.isNotBlank(data.getString("status")), "status", data.getString("status"))
                 .between(ObjectUtil.isNotNull(data.get("startTime")), "create_time", data.getDate("startTime"), data.getDate("endTime"))
