@@ -54,6 +54,9 @@ public class LabPlanInfo {
     @TableField(alias = "release_time")
     @Comment("发布时间")
     private String releaseTime;
+    @TableField(alias = "message")
+    @Comment("反显字段")
+    private String message;
     @Comment("发布状态 0：待发布 1：已发布")
     private String status;
     @TableField(alias = "create_id")
