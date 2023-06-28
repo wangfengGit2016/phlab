@@ -302,6 +302,11 @@ public class SelectBuilder {
         return this;
     }
 
+    public SelectBuilder desc(String column,String column1){
+        sql.ORDER_BY(column+","+column1+" desc");
+        return this;
+    }
+
 
     public int count(){
         return mapper.count(this.toString());

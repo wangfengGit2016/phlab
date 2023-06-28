@@ -38,7 +38,7 @@ public class LabPlanInfoService implements IService {
         CoreBuilder.select()
                 .like(StringUtils.isNotBlank(data.getString("docNumber")), "doc_number", data.getString("docNumber"))
                 .like(StringUtils.isNotBlank(data.getString("year")), "year", data.getString("year"))
-                .group("year").group("deptId")
+                .desc("year","dept_id")
                 .page(page, LabPlanInfo.class);
         return page.toJson();
     }
