@@ -32,6 +32,16 @@ import org.springframework.stereotype.Service;
 @Slf4j
 @Service("LabPlanInfoService")
 public class LabPlanInfoService implements IService {
+    public JSONObject summaryPage(JSONObject data) {
+        log.info("{}", data);
+        Page<LabPlanInfo> page = new Page<>(data);
+        CoreBuilder.select()
+                .like(StringUtils.isNotBlank(data.getString("docNumber")), "doc_number", data.getString("docNumber"))
+                .like(StringUtils.isNotBlank(data.getString("year")), "year", data.getString("year"))
+                .group("year").group("deptId")
+                .page(page, LabPlanInfo.class);
+        return page.toJson();
+    }
 
     public JSONObject page(JSONObject data) {
         log.info("{}", data);
@@ -345,4 +355,6 @@ public class LabPlanInfoService implements IService {
         res.put("data", bean);
         return res;
     }
+
+
 }

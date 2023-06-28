@@ -25,10 +25,10 @@ public class LabEvalInfoController {
 
     @Resource
     LabPlanInfoService labPlanInfoService;
-    /*@ApiOperation("在线评价汇总分页")
+    @ApiOperation("在线评价汇总分页")
     @PostMapping(value = "/summaryPage")
     public JSONObject page(@RequestBody LabPlanInfoDTO param) {
         return labPlanInfoService.summaryPage((JSONObject) JSONObject.toJSON(param));
-    }*/
+    }
 
 }
