@@ -49,6 +49,21 @@ public class SysOrganController {
         return res;
     }
 
+    @ApiOperation("区域树")
+    @PostMapping(value="/regionTree")
+    public JSONObject regionTree(@RequestBody SysStaffParam param){
+        JSONObject data = new JSONObject();
+        data.put("type","1");
+        JSONObject organ = sysOrganInfoService.list(data);
+        if(StringUtils.isBlank(param.getId())){
+            param.setId(DictConstants.ROOT_NODE);
+        }
+        JSONObject res = new JSONObject();
+        res.put("tree", NodesUtils.getChildNodes(JsonUtils.getList(organ,"list"),param.getId()));
+        res.remove("list");
+        return res;
+    }
+
 
     @ApiOperation("组织架构列表")
     @PostMapping(value="/list")
