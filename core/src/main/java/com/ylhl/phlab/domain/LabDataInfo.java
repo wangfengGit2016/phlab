@@ -62,6 +62,7 @@ public class LabDataInfo {
     @TableField(alias = "upload_data_status")
     @Comment("数据上传状态 0：否 1：是")
     private String uploadDataStatus;
+    @TableField(alias = "eval_status")
     @Comment("当前状态 0：待提交 1：待评价 2：已评价")
     private String evalStatus;
     @TableField(alias = "eval_result")
