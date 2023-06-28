@@ -14,6 +14,7 @@ import cn.hutool.core.util.ObjectUtil;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.google.api.client.json.Json;
+import com.ylhl.phlab.constant.LabConstant;
 import com.ylhl.phlab.domain.*;
 import com.ylhl.phlab.dto.SysFileInfoDTO;
 import com.ylhl.phlab.mapper.DeleteBuilder;
@@ -111,7 +112,7 @@ public class LabPlanInfoService implements IService {
         bean.setSiteTotal(siteList.size());
         bean.setReleaseTime(year + "年" + cal.get(Calendar.MONTH) + "月" + cal.get(Calendar.DAY_OF_MONTH) + "日");
 
-        if (bean.getStatus().equals("1")) {
+        if (bean.getStatus().equals(LabConstant.PLAN_STATUS_OK)) {
             //已经发布
             bean.setNeedEval("0");
         }else{
@@ -155,7 +156,7 @@ public class LabPlanInfoService implements IService {
         CoreBuilder.insert().saveBatch(labPlanSiteDeptList, new LabPlanSiteDepartmentRel());
         //如果是发布状态 要下发试卷
         //TODO 下发员工id name 所在地区id name
-        if (bean.getStatus().equals("1")) {
+        if (bean.getStatus().equals(LabConstant.PLAN_STATUS_OK)) {
             List<JSONObject> labDataInfoList = new ArrayList<>();
             for (JSONObject jsonObject : deptList) {
                 LabDataInfo labDataInfo = new LabDataInfo();
@@ -180,7 +181,7 @@ public class LabPlanInfoService implements IService {
         List<String> list = Arrays.asList(planId);
         list.forEach(s -> {
             JSONObject bean = CoreBuilder.select().eq("plan_id", s).one(LabPlanInfo.class);
-            if (bean.getString("status").equals("1")) {
+            if (bean.getString("status").equals(LabConstant.PLAN_STATUS_OK)) {
                 AssertUtil.isTrue(true, "已发布的计划不可删除！");
             }
         });
@@ -193,7 +194,7 @@ public class LabPlanInfoService implements IService {
         //只有没发布的下发计划才能编辑
         JSONObject res = new JSONObject();
         JSONObject plan = CoreBuilder.select().eq("plan_id", data.getString("planId")).one(LabPlanInfo.class);
-        if (plan.getString("status").equals("1")) {
+        if (plan.getString("status").equals(LabConstant.PLAN_STATUS_OK)) {
             AssertUtil.isTrue(true, "已发布的下发计划不可编辑！");
         }
         //删计划文件关联表
@@ -252,7 +253,7 @@ public class LabPlanInfoService implements IService {
         CoreBuilder.insert().saveBatch(labPlanSiteDeptList, new LabPlanSiteDepartmentRel());
         //如果是发布状态 要下发试卷
         //TODO 下发员工id name 所在地区id name
-        if (bean.getStatus().equals("1")) {
+        if (bean.getStatus().equals(LabConstant.PLAN_STATUS_OK)) {
             List<JSONObject> labDataInfoList = new ArrayList<>();
             for (JSONObject jsonObject : deptList) {
                 LabDataInfo labDataInfo = new LabDataInfo();

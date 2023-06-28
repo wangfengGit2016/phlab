@@ -8,6 +8,7 @@ import java.util.List;
 
 import cn.hutool.core.util.ObjectUtil;
 import com.alibaba.fastjson.JSONObject;
+import com.ylhl.phlab.constant.LabConstant;
 import com.ylhl.phlab.domain.*;
 import com.ylhl.phlab.utils.AssertUtil;
 import lombok.extern.slf4j.Slf4j;
@@ -68,7 +69,7 @@ public class LabDataInfoService implements IService {
         log.info("{}", data);
         JSONObject res = new JSONObject();
         JSONObject dataPlan = CoreBuilder.select().eq("data_id", data.getString("dataId")).one(LabDataInfo.class);
-        if (dataPlan.getString("sampleStatus").equals("0")) {
+        if (dataPlan.getString("sampleStatus").equals(LabConstant.SAMPLE_STATUS_NO)) {
             AssertUtil.isTrue(true, "未领取样本不能上报实验结果！");
         }
         LabDataInfo bean = BeanUtil.toBean(data, LabDataInfo.class);
@@ -83,8 +84,9 @@ public class LabDataInfoService implements IService {
             labDataFileRelList.add(json);
         });
         CoreBuilder.insert().saveBatch(labDataFileRelList, new LabDataFileRel());
-        if (data.getString("uploadDataStatus").equals("1")) {
-            bean.setEvalStatus("1");
+        //如果数据上传 将该数据变为待评价状态
+        if (data.getString("uploadDataStatus").equals(LabConstant.UPLOAD_DATA_STATUS_YES)) {
+            bean.setEvalStatus(LabConstant.EVAL_STATUS_NO);
         }
         CoreBuilder.update().edit(bean);
         return res;
@@ -110,6 +112,11 @@ public class LabDataInfoService implements IService {
         log.info("{}", data);
         JSONObject res = new JSONObject();
         LabDataInfo bean = BeanUtil.toBean(data, LabDataInfo.class);
+        bean.setUploadDataStatus(LabConstant.UPLOAD_DATA_STATUS_NO);
+        bean.setEvalStatus(LabConstant.EVAL_STATUS_WAIT);
+        //将数据对应的下发计划的评价跳转按钮打开
+        JSONObject dataPlan = CoreBuilder.select().eq("data_id", data.getString("dataId")).one(LabDataInfo.class);
+        CoreBuilder.update().eq("plan_id",dataPlan.getString("planId")).set("need_eval",LabConstant.NEED_EVAL_NEED).edit(LabPlanInfo.class);
         //删除原来的附件
         CoreBuilder.delete().eq("business_id", data.getString("dataId")).remove(LabPlanFileRel.class);
         //往计划附件表中存数据
@@ -123,9 +130,6 @@ public class LabDataInfoService implements IService {
             labDataFileRelList.add(json);
         });
         CoreBuilder.insert().saveBatch(labDataFileRelList, new LabDataFileRel());
-        if (data.getString("uploadDataStatus").equals("1")) {
-            bean.setEvalStatus("1");
-        }
         CoreBuilder.update().edit(bean);
         return res;
     }
@@ -148,4 +152,26 @@ public class LabDataInfoService implements IService {
     }
 
 
+    public JSONObject dataEval(JSONObject data) {
+        log.info("{}", data);
+        JSONObject res = new JSONObject();
+        LabDataInfo bean = BeanUtil.toBean(data,LabDataInfo.class);
+        bean.setEvalStatus(LabConstant.EVAL_STATUS_YES);
+        res.put("status",CoreBuilder.insert().save(bean));
+        //查看所有数据是否全都评价完成
+        LabDataInfo labDataInfo = CoreBuilder.select().eq("data_id", data.getString("dataId")).oneT(LabDataInfo.class);
+        List<LabDataInfo> dataInfoList = CoreBuilder.select().eq("plan_id", labDataInfo.getPlanId()).list(LabDataInfo.class);
+        int flag=0;
+        for (LabDataInfo dataInfo : dataInfoList) {
+            if(!dataInfo.getEvalStatus().equals(LabConstant.EVAL_STATUS_YES)){
+                flag=1;
+                break;
+            }
+        }
+        //如果所有数据评价完成 将该下发计划变成不需要评价状态
+        if (flag==0){
+            CoreBuilder.update().eq("plan_id", labDataInfo.getPlanId()).set("need_eval",LabConstant.NEED_EVAL_NOT_NEED).edit(LabPlanInfo.class);
+        }
+        return res;
+    }
 }
