@@ -3,9 +3,8 @@ package com.ylhl.phlab.controller;
 import com.alibaba.fastjson.JSONObject;
 import com.ylhl.phlab.domain.LabPlanInfo;
 import com.ylhl.phlab.dto.LabPlanInfoDTO;
-import com.ylhl.phlab.param.SysOrganParam;
+import com.ylhl.phlab.dto.SysOrganInfoDTO;
 import com.ylhl.phlab.service.impl.LabPlanInfoService;
-import com.ylhl.phlab.service.impl.SysOrganInfoService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
@@ -64,7 +63,7 @@ public class LabPlanInfoController {
     }
     @ApiOperation("下发计划获取场地科室树")
     @PostMapping(value = "/siteAndDeptTree")
-    public JSONObject siteAndDeptTree(@RequestBody SysOrganParam param) {
+    public JSONObject siteAndDeptTree(@RequestBody SysOrganInfoDTO param) {
         return labPlanInfoService.siteAndDeptTree((JSONObject) JSONObject.toJSON(param));
     }
 }
