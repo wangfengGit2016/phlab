@@ -248,6 +248,8 @@ public class LabPlanInfoService implements IService {
         bean.setDeptId(organId);
         bean.setDeptName(sysOrganInfo.getNodeName());
         bean.setYear(String.valueOf(year));
+        //List<JSONObject> siteList = (List<JSONObject>) data.get("siteList");
+        //bean.setSiteTotal(siteList.size());
         bean.setReleaseTime(year + "年" + cal.get(Calendar.MONTH) + "月" + cal.get(Calendar.DAY_OF_MONTH) + "日");
 
         if (bean.getStatus().equals(LabConstant.PLAN_STATUS_OK)) {
@@ -260,7 +262,6 @@ public class LabPlanInfoService implements IService {
         bean.setDeptMessage("{\"deptList\":"+data.getString("deptList")+"}");
         CoreBuilder.update().edit(bean);
 
-        //TODO 新增的部分拉过来
         //往计划附件表中存数据
         List<JSONObject> fileList = (List<JSONObject>) data.get("fileList");
         List<JSONObject> labPlanFileRelList = new ArrayList<>();
@@ -324,6 +325,7 @@ public class LabPlanInfoService implements IService {
         CoreBuilder.insert().saveBatch(labPlanSiteDeptList, new LabPlanSiteDepartmentRel());
         CoreBuilder.insert().saveBatch(labPlanSiteDeptList1, new LabPlanSiteDeptRel());
         CoreBuilder.update().eq("plan_id", bean.getPlanId()).set("site_total", hashSet.size()).edit(LabPlanInfo.class);
+
         //如果是发布状态 要下发试卷
         //TODO 下发员工id name 所在地区id name
         if (bean.getStatus().equals(LabConstant.PLAN_STATUS_OK)) {
