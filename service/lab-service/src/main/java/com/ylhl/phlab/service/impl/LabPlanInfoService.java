@@ -154,6 +154,7 @@ public class LabPlanInfoService implements IService {
         for (List<String> s : deptList) {
             String deptName = deptHashMap.get(s.get(s.size() - 1));
             String siteName = deptHashMap.get(s.get(s.size() - 2));
+            String cityName = deptHashMap.get(s.get(s.size() - 3));
             if(!hashSet.contains(s.get(s.size() - 2))){
                 //往计划场地关联表中存数据
                 LabPlanSiteRel labPlanSiteRel = new LabPlanSiteRel();
@@ -176,7 +177,7 @@ public class LabPlanInfoService implements IService {
             //往计划场地科室记录表中存数据
             LabPlanSiteDeptRel labPlanSiteDeptRel1 = new LabPlanSiteDeptRel();
             labPlanSiteDeptRel1.setPlanId(bean.getPlanId());
-            labPlanSiteDeptRel1.setSiteDeptName(siteName + deptName);
+            labPlanSiteDeptRel1.setSiteDeptName(cityName+siteName + deptName);
             JSONObject json2 = (JSONObject) JSONObject.toJSON(labPlanSiteDeptRel1);
             labPlanSiteDeptList1.add(json2);
         }
@@ -292,6 +293,7 @@ public class LabPlanInfoService implements IService {
         for (List<String> s : deptList) {
             String deptName = deptHashMap.get(s.get(s.size() - 1));
             String siteName = deptHashMap.get(s.get(s.size() - 2));
+            String cityName = deptHashMap.get(s.get(s.size() - 3));
             if(!hashSet.contains(s.get(s.size() - 2))){
                 //往计划场地关联表中存数据
                 LabPlanSiteRel labPlanSiteRel = new LabPlanSiteRel();
@@ -314,7 +316,7 @@ public class LabPlanInfoService implements IService {
             //往计划场地科室记录表中存数据
             LabPlanSiteDeptRel labPlanSiteDeptRel1 = new LabPlanSiteDeptRel();
             labPlanSiteDeptRel1.setPlanId(bean.getPlanId());
-            labPlanSiteDeptRel1.setSiteDeptName(siteName + deptName);
+            labPlanSiteDeptRel1.setSiteDeptName(cityName+siteName + deptName);
             JSONObject json2 = (JSONObject) JSONObject.toJSON(labPlanSiteDeptRel1);
             labPlanSiteDeptList1.add(json2);
         }
@@ -356,6 +358,8 @@ public class LabPlanInfoService implements IService {
         bean.put("deptList",jsonObject1.get("deptList"));
         bean.remove("deptMessage");
         bean.remove("fileMessage");
+        List<LabPlanSiteDeptRel> siteDeptList = CoreBuilder.select().eq("plan_id", data.getString("planId")).list(LabPlanSiteDeptRel.class);
+        bean.put("siteDeptList",siteDeptList);
         /*//去计划区域关联表中拿区域信息
         List<LabPlanSiteRel> siteList = CoreBuilder.select().eq("plan_id", data.getString("planId")).list(LabPlanSiteRel.class);
         bean.put("siteList", siteList);
