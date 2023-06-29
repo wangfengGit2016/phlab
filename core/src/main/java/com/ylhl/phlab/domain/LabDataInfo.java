@@ -30,16 +30,16 @@ public class LabDataInfo {
     @Comment("盲样种类")
     private String typeName;
     @TableField(alias = "dept_id")
-    @Comment("科室id")
+    @Comment("下发科室id")
     private String deptId;
     @TableField(alias = "dept_name")
-    @Comment("科室名称")
+    @Comment("下发科室名称")
     private String deptName;
     @TableField(alias = "staff_id")
-    @Comment("员工id")
+    @Comment("下发员工id")
     private String staffId;
     @TableField(alias = "staff_name")
-    @Comment("员工姓名")
+    @Comment("下发员工姓名")
     private String staffName;
     @TableField(alias = "site_id")
     @Comment("所在地区id")
@@ -62,8 +62,9 @@ public class LabDataInfo {
     @TableField(alias = "upload_data_status")
     @Comment("数据上传状态 0：否 1：是")
     private String uploadDataStatus;
+    @TableField(alias = "eval_status")
     @Comment("当前状态 0：待提交 1：待评价 2：已评价")
-    private String status;
+    private String evalStatus;
     @TableField(alias = "eval_result")
     @Comment("评价结果 0：未评价 1：通过 2：不通过")
     private String evalResult;
@@ -101,6 +102,12 @@ public class LabDataInfo {
     private String planPhone;
     @Comment("具体内容")
     private String context;
+    @TableField(alias = "data_dept_id")
+    @Comment("数据上传科室id")
+    private String dataDeptId;
+    @TableField(alias = "data_dept_name")
+    @Comment("数据上传科室名称")
+    private String dataDeptName;
     @TableField(alias = "create_id")
     @Comment("创建人id")
     private String createId;

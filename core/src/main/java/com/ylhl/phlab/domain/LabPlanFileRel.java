@@ -20,6 +20,22 @@ public class LabPlanFileRel {
     @TableField(alias = "file_path")
     @Comment("存储路径")
     private String filePath;
+    @Comment("存储:(1-华为云)")
+    private Integer location;
+    @Comment("obs桶名称")
+    private String bucket;
+    @TableField(alias = "origin_name")
+    @Comment("文件原始名称（用户上传时名称）")
+    private String originName;
+    @TableField(alias = "file_suffix")
+    @Comment("文件后缀名")
+    private String fileSuffix;
+    @TableField(alias = "content_type")
+    @Comment("文件content-type类型")
+    private String contentType;
+    @TableField(alias = "file_size")
+    @Comment("文件大小，以kb为单位")
+    private String fileSize;
     @TableField(alias = "create_id")
     @Comment("创建人id")
     private String createId;
