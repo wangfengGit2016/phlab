@@ -125,7 +125,10 @@ public class LabPlanInfoService implements IService {
         List<JSONObject> labPlanFileRelList = new ArrayList<>();
         fileList.forEach(sysFileInfo -> {
             LabPlanFileRel labPlanFileRel = new LabPlanFileRel();
-            BeanUtil.copyProperties(sysFileInfo, labPlanFileRel);
+            labPlanFileRel.setFileId(data.getString("id"));
+            labPlanFileRel.setOriginName(data.getString("name"));
+            labPlanFileRel.setContentType(data.getString("type"));
+            labPlanFileRel.setFilePath(data.getString("path"));
             labPlanFileRel.setPlanId(bean.getPlanId());
             JSONObject json = (JSONObject) JSONObject.toJSON(labPlanFileRel);
             labPlanFileRelList.add(json);
