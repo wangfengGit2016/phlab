@@ -20,6 +20,9 @@ public interface CoreMapper {
     @SelectProvider(type= CoreProvider.class, method="execObject")
     List<JSONObject> execObject(JSONObject data);
 
+    @SelectProvider(type= CoreProvider.class, method="countObject")
+    int countObject(JSONObject data);
+
     @SelectProvider(type= CoreProvider.class, method="exec")
     List<JSONObject> exec(String sql);
 

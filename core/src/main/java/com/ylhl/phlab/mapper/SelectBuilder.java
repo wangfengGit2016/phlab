@@ -348,9 +348,9 @@ public class SelectBuilder {
 
     public <T> Page<T> page(Page<T> page, Class<T> clazz){
         select(clazz);
-        page.setTotal(mapper.count(this.toString()));
-        this.limit((page.current-1)*page.size,page.size);
         data.put("baseSql",sql.toString());
+        page.setTotal(mapper.countObject(data));
+        this.limit((page.current-1)*page.size,page.size);
         List<JSONObject> list = mapper.execObject(data);
         page.setRecords(list.stream().map(item->item.toJavaObject(clazz)).collect(Collectors.toList()));
         return page;
