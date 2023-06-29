@@ -249,9 +249,15 @@ public class LabPlanInfoService implements IService {
         bean.setDeptName(sysOrganInfo.getNodeName());
         bean.setYear(String.valueOf(year));
         bean.setReleaseTime(year + "年" + cal.get(Calendar.MONTH) + "月" + cal.get(Calendar.DAY_OF_MONTH) + "日");
-        List<JSONObject> siteList = (List<JSONObject>) data.get("siteList");
-        bean.setFileMessage(data.getString("fileList"));
-        bean.setDeptMessage(data.getString("deptList"));
+
+        if (bean.getStatus().equals(LabConstant.PLAN_STATUS_OK)) {
+            //已经发布
+            bean.setNeedEval("0");
+        } else {
+            bean.setNeedEval("1");
+        }
+        bean.setFileMessage("{\"fileList\":"+data.getString("fileList")+"}");
+        bean.setDeptMessage("{\"deptList\":"+data.getString("deptList")+"}");
         CoreBuilder.update().edit(bean);
 
         //TODO 新增的部分拉过来
