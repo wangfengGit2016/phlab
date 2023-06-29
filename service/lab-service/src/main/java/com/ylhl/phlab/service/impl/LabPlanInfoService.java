@@ -118,10 +118,10 @@ public class LabPlanInfoService implements IService {
         } else {
             bean.setNeedEval("1");
         }
-        /*bean.setFileMessage("{\"fileList\":"+data.getString("fileList")+"}");
-        bean.setDeptMessage("{\"deptList\":"+data.getString("deptList")+"}");*/
-        bean.setFileMessage(data.getString("fileList"));
-        bean.setDeptMessage(data.getString("deptList"));
+        bean.setFileMessage("{\"fileList\":"+data.getString("fileList")+"}");
+        bean.setDeptMessage("{\"deptList\":"+data.getString("deptList")+"}");
+        /*bean.setFileMessage(data.getString("fileList"));
+        bean.setDeptMessage(data.getString("deptList"));*/
         res.put("status", CoreBuilder.insert().save(bean));
 
         //往计划附件表中存数据
@@ -341,15 +341,11 @@ public class LabPlanInfoService implements IService {
         log.info("{}", data);
         JSONObject bean = CoreBuilder.select().eq("plan_id", data.getString("planId")).one(LabPlanInfo.class);
         String fileMessage = bean.getString("fileMessage");
-        fileMessage = fileMessage.substring(1);
-        fileMessage = fileMessage.substring(0, fileMessage.length() - 1);
-        //JSONObject jsonObject = JSON.parseObject(fileMessage);
-        bean.put("fileList", fileMessage);
+        JSONObject jsonObject = JSON.parseObject(fileMessage);
+        bean.put("fileList",jsonObject.get("fileList"));
         String deptMessage = bean.getString("deptMessage");
-        //JSONObject jsonObject1 = JSON.parseObject(deptMessage);
-        deptMessage = deptMessage.substring(1);
-        deptMessage = deptMessage.substring(0, deptMessage.length() - 1);
-        bean.put("deptList", deptMessage);
+        JSONObject jsonObject1 = JSON.parseObject(deptMessage);
+        bean.put("deptList",jsonObject1.get("deptList"));
         bean.remove("deptMessage");
         bean.remove("fileMessage");
         /*//去计划区域关联表中拿区域信息
