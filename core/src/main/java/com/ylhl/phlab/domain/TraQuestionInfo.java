@@ -20,8 +20,8 @@ public class TraQuestionInfo {
     @Comment("题干")
     private String questionTitle;
     @TableField(alias = "question_type")
-    @Comment("题目类型  0单选题 1多选题 2判断题 3主观题")
-    private String questionType;
+    @Comment("题目类型  0单选题 1多选题 2判断题 3填空题 4主观题")
+    private Integer questionType;
     @TableField(alias = "question_content")
     @Comment("选项内容")
     private String questionContent;
@@ -30,6 +30,9 @@ public class TraQuestionInfo {
     private Integer uniqueId;
     @Comment("分值")
     private Integer score;
+    @TableField(alias = "dept_name")
+    @Comment("科室")
+    private String deptName;
     @Comment("标签")
     private String tag;
     @TableField(alias = "correct_answer")

@@ -4,6 +4,7 @@ import cn.hutool.core.bean.BeanUtil;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 import cn.hutool.core.util.IdUtil;
@@ -25,14 +26,20 @@ import javax.annotation.Resource;
 @Service("TraQuestionInfoService")
 public class TraQuestionInfoService implements IService {
 
-    @Resource
-    TraTagInfoService traTagInfoService;
 
     public JSONObject page(JSONObject data) {
         log.info("{}", data);
         Page<TraQuestionInfo> page = new Page<>(data);
         String tag = data.getString("tag");
-        CoreBuilder.select().like(StringUtils.isNotBlank(tag), "tag", tag).desc("create_time").page(page, TraQuestionInfo.class);
+        String deptName = data.getString("deptName");
+        String id = data.getString("uniqueId");
+        String type = data.getString("questionType");
+        CoreBuilder.select()
+                .like(StringUtils.isNotBlank(tag), "tag", tag)
+                .like(StringUtils.isNotBlank(deptName), "dept_name", deptName)
+                .like(StringUtils.isNotBlank(id), "unique_id", id)
+                .eq(StringUtils.isNotBlank(type), "question_type", type)
+                .desc("create_time").page(page, TraQuestionInfo.class);
         Page<JSONObject> pageJson = new Page<>();
         BeanUtils.copyProperties(page, pageJson, "records");
         pageJson.setRecords(elementConvert(page.getRecords(), "questionContent"));
@@ -43,7 +50,15 @@ public class TraQuestionInfoService implements IService {
         log.info("{}", data);
         JSONObject res = new JSONObject();
         String tag = data.getString("tag");
-        List<TraQuestionInfo> list = CoreBuilder.select().like(StringUtils.isNotBlank(tag), "tag", tag).desc("create_time").list(TraQuestionInfo.class);
+        String deptName = data.getString("deptName");
+        String id = data.getString("unique_id");
+        String type = data.getString("questionType");
+        List<TraQuestionInfo> list = CoreBuilder.select()
+                .like(StringUtils.isNotBlank(tag), "tag", tag)
+                .like(StringUtils.isNotBlank(deptName), "dept_name", deptName)
+                .like(StringUtils.isNotBlank(id), "unique_id", id)
+                .eq(StringUtils.isNotBlank(type), "question_type", type)
+                .desc("create_time").list(TraQuestionInfo.class);
         res.put("list", elementConvert(list, "questionContent"));
         return res;
     }
