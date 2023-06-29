@@ -84,6 +84,12 @@ public class CoreProvider {
         return sql.getString("baseSql");
     }
 
+    public String countObject(JSONObject sql) {
+
+        return sql.getString("baseSql").replaceAll("\\r\\n|\\r|\\n"," ")
+                .replaceFirst("SELECT(.*)FROM","SELECT count(1) FROM");
+    }
+
     public String count(String sql) {
         return sql.replaceAll("\\r\\n|\\r|\\n"," ")
                 .replaceFirst("SELECT(.*)FROM","SELECT count(1) FROM");
