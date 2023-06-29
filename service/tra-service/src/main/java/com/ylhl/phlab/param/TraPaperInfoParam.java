@@ -27,6 +27,9 @@ public class TraPaperInfoParam extends Page<TraPaperInfo> {
     @TableField(alias = "question_count")
     @ApiModelProperty("题目数量")
     private Integer questionCount;
+    @ApiModelProperty("展示唯一id")
+    @TableField(alias = "unique_id")
+    private String uniqueId;
     @TableField(alias = "pass_score")
     @ApiModelProperty("及格分数")
     private Integer passScore;

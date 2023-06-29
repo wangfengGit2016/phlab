@@ -26,7 +26,7 @@ public class TraQuestionInfoParam extends Page<TraQuestionInfoParam> {
     private String questionTitle;
     @ApiModelProperty("题目类型")
     @TableField(alias = "question_type")
-    private Integer questionType;
+    private String questionType;
     @ApiModelProperty("业务类型")
     @TableField(alias = "business_type")
     private Integer businessType;
