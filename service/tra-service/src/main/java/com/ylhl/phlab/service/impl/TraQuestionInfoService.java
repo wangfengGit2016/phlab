@@ -103,8 +103,9 @@ public class TraQuestionInfoService implements IService {
     public JSONObject detail(JSONObject data) {
         log.info("{}", data);
         JSONObject res = new JSONObject();
-        JSONObject bean = CoreBuilder.select().eq("question_id", data.getString("questionId")).one(TraQuestionInfo.class);
-        res.put("data", bean);
+        List<TraQuestionInfo> questionInfos = CoreBuilder.select().eq("question_id", data.getString("questionId")).list(TraQuestionInfo.class);
+        List<JSONObject> beans = elementConvert(questionInfos, "questionContent");
+        res.put("data", beans.get(0));
         return res;
     }
 
