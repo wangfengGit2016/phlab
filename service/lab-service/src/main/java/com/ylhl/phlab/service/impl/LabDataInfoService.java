@@ -37,6 +37,8 @@ public class LabDataInfoService implements IService {
                 .between(ObjectUtil.isNotNull(data.get("startTime")), "create_time", data.getDate("startTime"), data.getDate("endTime"))
                 .desc("create_time")
                 .page(page, LabDataInfo.class);
+
+        System.out.println("搜索出来的条数为"+page.getTotal());
         return page.toJson();
     }
 

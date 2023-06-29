@@ -119,6 +119,7 @@ public class LabPlanInfoService implements IService {
             bean.setNeedEval("1");
         }
         res.put("status", CoreBuilder.insert().save(bean));
+
         //往计划附件表中存数据
         List<JSONObject> fileList = (List<JSONObject>) data.get("fileList");
         List<JSONObject> labPlanFileRelList = new ArrayList<>();

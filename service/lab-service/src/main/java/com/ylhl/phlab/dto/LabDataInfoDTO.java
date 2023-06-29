@@ -12,7 +12,6 @@ import java.util.Date;
 import java.util.List;
 
 @Data
-@Table("lab_data_info")
 public class LabDataInfoDTO extends Page<LabDataInfoDTO> {
 
     private String dataId;
