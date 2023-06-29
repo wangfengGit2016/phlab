@@ -1,6 +1,6 @@
 package com.ylhl.phlab.dto;
 
-import cn.hutool.json.JSONObject;
+import com.alibaba.fastjson.JSONObject;
 import com.ylhl.phlab.annotation.Comment;
 import com.ylhl.phlab.annotation.Table;
 import com.ylhl.phlab.annotation.TableField;
@@ -12,7 +12,6 @@ import java.util.Date;
 import java.util.List;
 
 @Data
-@Table("lab_data_info")
 public class LabDataInfoDTO extends Page<LabDataInfoDTO> {
 
     private String dataId;

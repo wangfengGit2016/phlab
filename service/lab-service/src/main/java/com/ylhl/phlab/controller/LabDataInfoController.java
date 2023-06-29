@@ -53,4 +53,9 @@ public class LabDataInfoController {
         return labDataInfoService.detailByBefore((JSONObject) JSONObject.toJSON(param));
     }
 
+    @ApiOperation("检测数据详情")
+    @PostMapping(value = "/detail")
+    public JSONObject detail(@RequestBody LabDataInfoDTO param) {
+        return labDataInfoService.detail((JSONObject) JSONObject.toJSON(param));
+    }
 }

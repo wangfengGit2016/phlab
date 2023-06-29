@@ -1,6 +1,6 @@
 package com.ylhl.phlab.dto;
 
-import cn.hutool.json.JSONObject;
+import com.alibaba.fastjson.JSONObject;
 import com.ylhl.phlab.annotation.Comment;
 import com.ylhl.phlab.annotation.Table;
 import com.ylhl.phlab.annotation.TableField;
@@ -45,6 +45,5 @@ public class LabPlanInfoDTO extends Page<LabPlanInfoDTO> {
     private Date deleteTime;
     private String deleted;
     private List<JSONObject> fileList;
-    private List<JSONObject> siteList;
-    private List<JSONObject> deptList;
+    private List<List<String>> deptList;
 }
