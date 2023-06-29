@@ -54,9 +54,12 @@ public class LabPlanInfo {
     @TableField(alias = "release_time")
     @Comment("发布时间")
     private String releaseTime;
-    @TableField(alias = "message")
-    @Comment("反显字段")
-    private String message;
+    @TableField(alias = "file_message")
+    @Comment("文件反显字段")
+    private String fileMessage;
+    @TableField(alias = "dept_message")
+    @Comment("科室反显字段")
+    private String deptMessage;
     @TableField(alias = "need_eval")
     @Comment("评价跳转状态 0：需要评价 1：不需要评价")
     private String needEval;

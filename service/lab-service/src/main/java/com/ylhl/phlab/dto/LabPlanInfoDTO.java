@@ -31,7 +31,6 @@ public class LabPlanInfoDTO extends Page<LabPlanInfoDTO> {
     private String dataDate;
     private String content;
     private String releaseTime;
-    private String message;
     private String needEval;
     private String status;
     private String createId;
@@ -46,4 +45,6 @@ public class LabPlanInfoDTO extends Page<LabPlanInfoDTO> {
     private String deleted;
     private List<JSONObject> fileList;
     private List<List<String>> deptList;
+    private String fileMessage;
+    private String deptMessage;
 }
