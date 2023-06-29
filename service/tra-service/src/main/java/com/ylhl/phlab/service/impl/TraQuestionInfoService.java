@@ -7,9 +7,8 @@ import java.util.stream.Collectors;
 
 import cn.hutool.core.util.IdUtil;
 import com.alibaba.fastjson.JSONObject;
-import com.ylhl.phlab.consts.CommonConstant;
 import com.ylhl.phlab.domain.TraPaperQuestionRel;
-import com.ylhl.phlab.domain.TraTagInfo;
+import com.ylhl.phlab.util.UniqueIdUtil;
 import lombok.extern.slf4j.Slf4j;
 import com.ylhl.phlab.service.IService;
 import com.ylhl.phlab.domain.TraQuestionInfo;
@@ -32,9 +31,11 @@ public class TraQuestionInfoService implements IService {
         String tag = data.getString("tag");
         String id = data.getString("uniqueId");
         String type = data.getString("questionType");
+        String title = data.getString("questionTitle");
         CoreBuilder.select()
                 .like(StringUtils.isNotBlank(tag), "tag", tag)
                 .like(StringUtils.isNotBlank(id), "unique_id", id)
+                .like(StringUtils.isNotBlank(title), "question_title", title)
                 .eq(StringUtils.isNotBlank(type), "question_type", type)
                 .desc("create_time").page(page, TraQuestionInfo.class);
         Page<JSONObject> pageJson = new Page<>();
@@ -49,9 +50,11 @@ public class TraQuestionInfoService implements IService {
         String tag = data.getString("tag");
         String id = data.getString("unique_id");
         String type = data.getString("questionType");
+        String title = data.getString("questionTitle");
         List<TraQuestionInfo> list = CoreBuilder.select()
                 .like(StringUtils.isNotBlank(tag), "tag", tag)
                 .like(StringUtils.isNotBlank(id), "unique_id", id)
+                .like(StringUtils.isNotBlank(title), "question_title", title)
                 .eq(StringUtils.isNotBlank(type), "question_type", type)
                 .desc("create_time").list(TraQuestionInfo.class);
         res.put("list", elementConvert(list, "questionContent"));
@@ -63,35 +66,27 @@ public class TraQuestionInfoService implements IService {
         JSONObject res = new JSONObject();
         TraQuestionInfo bean = BeanUtil.toBean(data, TraQuestionInfo.class);
         bean.setQuestionId(IdUtil.fastSimpleUUID());
-        List<TraQuestionInfo> maxIdList ;
-        try {
-            maxIdList = CoreBuilder.select().select("MAX(unique_id) as unique_id").list(TraQuestionInfo.class);
-        } catch (Exception e){
-            maxIdList = new ArrayList<>();
-        }
-        Integer maxId = maxIdList.isEmpty() ? CommonConstant.NUM_START : maxIdList.get(0).getUniqueId() + CommonConstant.NUM_STEP;
-        bean.setUniqueId(maxId);
+        bean.setUniqueId(UniqueIdUtil.getId(TraQuestionInfo.class));
         int affect = CoreBuilder.insert().save(bean);
         res.put("status", affect);
-        if (affect==0){
-            return res;
-        }
-        // 新建成功则同步标签表
-        String[] tags = data.getString("tag").split("、");
-        List<String> existTag = CoreBuilder.select().list(TraTagInfo.class).stream().map(TraTagInfo::getTagContent).collect(Collectors.toList());
-        List<JSONObject> readyTag = new ArrayList<>();
-        for (String tag : tags){
-            if (!existTag.contains(tag)){
-                TraTagInfo tagInfo = new TraTagInfo();
-                tagInfo.setTagId(IdUtil.fastSimpleUUID());
-                tagInfo.setTagContent(tag);
-                tagInfo.setBusinessType(CommonConstant.QUESTION_TYPE);
-                readyTag.add((JSONObject) JSONObject.toJSON(tagInfo));
-            }
-        }
-        if (!readyTag.isEmpty()){
-            CoreBuilder.insert().saveBatch(readyTag, new TraTagInfo());
-        }
+//        // 新建成功则同步标签表
+//        if (StringUtils.isNotBlank(data.getString("tag")) && affect!=0){
+//            String[] tags = data.getString("tag").split("、");
+//            List<String> existTag = CoreBuilder.select().list(TraTagInfo.class).stream().map(TraTagInfo::getTagContent).collect(Collectors.toList());
+//            List<JSONObject> readyTag = new ArrayList<>();
+//            for (String tag : tags){
+//                if (!existTag.contains(tag)){
+//                    TraTagInfo tagInfo = new TraTagInfo();
+//                    tagInfo.setTagId(IdUtil.fastSimpleUUID());
+//                    tagInfo.setTagContent(tag);
+//                    tagInfo.setBusinessType(CommonConstant.QUESTION_TYPE);
+//                    readyTag.add((JSONObject) JSONObject.toJSON(tagInfo));
+//                }
+//            }
+//            if (!readyTag.isEmpty()){
+//                CoreBuilder.insert().saveBatch(readyTag, new TraTagInfo());
+//            }
+//        }
         return res;
     }
 
