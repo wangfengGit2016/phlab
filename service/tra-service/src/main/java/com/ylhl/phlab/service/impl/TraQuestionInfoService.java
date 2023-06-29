@@ -1,5 +1,6 @@
 package com.ylhl.phlab.service.impl;
 
+import cn.dev33.satoken.stp.StpUtil;
 import cn.hutool.core.bean.BeanUtil;
 
 import java.util.*;
@@ -7,6 +8,7 @@ import java.util.stream.Collectors;
 
 import cn.hutool.core.util.IdUtil;
 import com.alibaba.fastjson.JSONObject;
+import com.ylhl.phlab.domain.SysUserInfo;
 import com.ylhl.phlab.domain.TraPaperQuestionRel;
 import com.ylhl.phlab.util.UniqueIdUtil;
 import lombok.extern.slf4j.Slf4j;
@@ -18,8 +20,6 @@ import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 
-import javax.annotation.Resource;
-
 @Slf4j
 @Service("TraQuestionInfoService")
 public class TraQuestionInfoService implements IService {
@@ -28,12 +28,12 @@ public class TraQuestionInfoService implements IService {
     public JSONObject page(JSONObject data) {
         log.info("{}", data);
         Page<TraQuestionInfo> page = new Page<>(data);
-        String tag = data.getString("tag");
+//        String tag = data.getString("tag");
         String id = data.getString("uniqueId");
         String type = data.getString("questionType");
         String title = data.getString("questionTitle");
         CoreBuilder.select()
-                .like(StringUtils.isNotBlank(tag), "tag", tag)
+//                .like(StringUtils.isNotBlank(tag), "tag", tag)
                 .like(StringUtils.isNotBlank(id), "unique_id", id)
                 .like(StringUtils.isNotBlank(title), "question_title", title)
                 .eq(StringUtils.isNotBlank(type), "question_type", type)
@@ -47,12 +47,12 @@ public class TraQuestionInfoService implements IService {
     public JSONObject list(JSONObject data) {
         log.info("{}", data);
         JSONObject res = new JSONObject();
-        String tag = data.getString("tag");
+//        String tag = data.getString("tag");
         String id = data.getString("unique_id");
         String type = data.getString("questionType");
         String title = data.getString("questionTitle");
         List<TraQuestionInfo> list = CoreBuilder.select()
-                .like(StringUtils.isNotBlank(tag), "tag", tag)
+//                .like(StringUtils.isNotBlank(tag), "tag", tag)
                 .like(StringUtils.isNotBlank(id), "unique_id", id)
                 .like(StringUtils.isNotBlank(title), "question_title", title)
                 .eq(StringUtils.isNotBlank(type), "question_type", type)
@@ -67,6 +67,10 @@ public class TraQuestionInfoService implements IService {
         TraQuestionInfo bean = BeanUtil.toBean(data, TraQuestionInfo.class);
         bean.setQuestionId(IdUtil.fastSimpleUUID());
         bean.setUniqueId(UniqueIdUtil.getId(TraQuestionInfo.class));
+        String id = (String) StpUtil.getLoginId();
+        SysUserInfo userInfo = CoreBuilder.select().eq("id", id).oneT(SysUserInfo.class);
+        bean.setCreateId(id);
+        bean.setCreateName(userInfo.getRealName());
         int affect = CoreBuilder.insert().save(bean);
         res.put("status", affect);
 //        // 新建成功则同步标签表
