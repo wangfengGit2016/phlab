@@ -26,7 +26,7 @@ public class TraPaperInfo {
     private Integer questionCount;
     @TableField(alias = "pass_socre")
     @Comment("及格分数")
-    private Integer passSocre;
+    private Integer passScore;
     @Comment("试卷总分")
     private Integer score;
     @TableField(alias = "exam_duration")

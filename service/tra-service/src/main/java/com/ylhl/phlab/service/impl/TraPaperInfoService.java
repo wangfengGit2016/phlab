@@ -60,4 +60,10 @@ public class TraPaperInfoService  implements IService{
           return res;
       }
 
+      public JSONObject publish(JSONObject data){
+          log.info("{}",data);
+          JSONObject res =new JSONObject();
+          return res;
+      }
+
 }
