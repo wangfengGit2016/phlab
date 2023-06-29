@@ -18,6 +18,9 @@ public class TraTagInfo {
     @TableField(alias = "tag_content")
     @Comment("标签内容")
     private String tagContent;
+    @TableField(alias = "business_type")
+    @Comment("业务类型")
+    private Integer businessType;
     @TableField(alias = "create_id")
     @Comment("创建人id")
     private String createId;

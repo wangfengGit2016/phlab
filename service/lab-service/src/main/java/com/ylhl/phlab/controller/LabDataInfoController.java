@@ -22,6 +22,7 @@ import javax.annotation.Resource;
 public class LabDataInfoController {
     @Resource
     LabDataInfoService labDataInfoService;
+
     @ApiOperation("检测数据分页")
     @PostMapping(value = "/page")
     public JSONObject page(@RequestBody LabDataInfoDTO param) {
