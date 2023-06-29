@@ -28,14 +28,16 @@ public class TraQuestionInfoService implements IService {
     public JSONObject page(JSONObject data) {
         log.info("{}", data);
         Page<TraQuestionInfo> page = new Page<>(data);
-//        String tag = data.getString("tag");
+        String score = data.getString("score");
+        String createName = data.getString("createName");
         String id = data.getString("uniqueId");
         String type = data.getString("questionType");
         String title = data.getString("questionTitle");
         CoreBuilder.select()
-//                .like(StringUtils.isNotBlank(tag), "tag", tag)
                 .like(StringUtils.isNotBlank(id), "unique_id", id)
                 .like(StringUtils.isNotBlank(title), "question_title", title)
+                .eq(StringUtils.isNotBlank(score), "score", score)
+                .like(StringUtils.isNotBlank(createName), "create_name", createName)
                 .eq(StringUtils.isNotBlank(type), "question_type", type)
                 .desc("create_time").page(page, TraQuestionInfo.class);
         Page<JSONObject> pageJson = new Page<>();
@@ -47,14 +49,16 @@ public class TraQuestionInfoService implements IService {
     public JSONObject list(JSONObject data) {
         log.info("{}", data);
         JSONObject res = new JSONObject();
-//        String tag = data.getString("tag");
+        String score = data.getString("score");
+        String createName = data.getString("createName");
         String id = data.getString("unique_id");
         String type = data.getString("questionType");
         String title = data.getString("questionTitle");
         List<TraQuestionInfo> list = CoreBuilder.select()
-//                .like(StringUtils.isNotBlank(tag), "tag", tag)
                 .like(StringUtils.isNotBlank(id), "unique_id", id)
                 .like(StringUtils.isNotBlank(title), "question_title", title)
+                .eq(StringUtils.isNotBlank(score), "score", score)
+                .like(StringUtils.isNotBlank(createName), "create_name", createName)
                 .eq(StringUtils.isNotBlank(type), "question_type", type)
                 .desc("create_time").list(TraQuestionInfo.class);
         res.put("list", elementConvert(list, "questionContent"));
@@ -73,24 +77,6 @@ public class TraQuestionInfoService implements IService {
         bean.setCreateName(userInfo.getRealName());
         int affect = CoreBuilder.insert().save(bean);
         res.put("status", affect);
-//        // 新建成功则同步标签表
-//        if (StringUtils.isNotBlank(data.getString("tag")) && affect!=0){
-//            String[] tags = data.getString("tag").split("、");
-//            List<String> existTag = CoreBuilder.select().list(TraTagInfo.class).stream().map(TraTagInfo::getTagContent).collect(Collectors.toList());
-//            List<JSONObject> readyTag = new ArrayList<>();
-//            for (String tag : tags){
-//                if (!existTag.contains(tag)){
-//                    TraTagInfo tagInfo = new TraTagInfo();
-//                    tagInfo.setTagId(IdUtil.fastSimpleUUID());
-//                    tagInfo.setTagContent(tag);
-//                    tagInfo.setBusinessType(CommonConstant.QUESTION_TYPE);
-//                    readyTag.add((JSONObject) JSONObject.toJSON(tagInfo));
-//                }
-//            }
-//            if (!readyTag.isEmpty()){
-//                CoreBuilder.insert().saveBatch(readyTag, new TraTagInfo());
-//            }
-//        }
         return res;
     }
 
