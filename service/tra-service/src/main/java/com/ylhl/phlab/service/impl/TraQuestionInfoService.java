@@ -103,7 +103,8 @@ public class TraQuestionInfoService implements IService {
     public JSONObject delete(JSONObject data) {
         log.info("{}", data);
         JSONObject res = new JSONObject();
-        CoreBuilder.delete().eq("question_id", data.getString("questionId")).remove(TraQuestionInfo.class);
+        List<String> deleteList = data.getJSONArray("questionIds").toJavaList(String.class);
+        CoreBuilder.delete().in("question_id", deleteList).remove(TraQuestionInfo.class);
         return res;
     }
 
