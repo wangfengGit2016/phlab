@@ -39,7 +39,7 @@ public class LabPlanInfoService implements IService {
         CoreBuilder.select()
                 .like(StringUtils.isNotBlank(data.getString("docNumber")), "doc_number", data.getString("docNumber"))
                 .like(StringUtils.isNotBlank(data.getString("year")), "year", data.getString("year"))
-                .desc("year","dept_id")
+                .desc("year", "dept_id")
                 .page(page, LabPlanInfo.class);
         return page.toJson();
     }
@@ -108,14 +108,14 @@ public class LabPlanInfoService implements IService {
         bean.setDeptId(organId);
         bean.setDeptName(sysOrganInfo.getNodeName());
         bean.setYear(String.valueOf(year));
-        List<JSONObject> siteList = (List<JSONObject>) data.get("siteList");
-        bean.setSiteTotal(siteList.size());
+        //List<JSONObject> siteList = (List<JSONObject>) data.get("siteList");
+        //bean.setSiteTotal(siteList.size());
         bean.setReleaseTime(year + "年" + cal.get(Calendar.MONTH) + "月" + cal.get(Calendar.DAY_OF_MONTH) + "日");
 
         if (bean.getStatus().equals(LabConstant.PLAN_STATUS_OK)) {
             //已经发布
             bean.setNeedEval("0");
-        }else{
+        } else {
             bean.setNeedEval("1");
         }
         res.put("status", CoreBuilder.insert().save(bean));
@@ -131,40 +131,66 @@ public class LabPlanInfoService implements IService {
             labPlanFileRelList.add(json);
         });
         CoreBuilder.insert().saveBatch(labPlanFileRelList, new LabPlanFileRel());
-        //往计划场地关联表中存数据
 
         List<JSONObject> labPlanSiteList = new ArrayList<>();
-        siteList.forEach(sysRegionInfo -> {
-            LabPlanSiteRel labPlanSiteRel = new LabPlanSiteRel();
-            BeanUtil.copyProperties(sysRegionInfo, labPlanSiteRel);
-            labPlanSiteRel.setPlanId(bean.getPlanId());
-            labPlanSiteRel.setPlanSiteId(IdUtil.fastSimpleUUID());
-            JSONObject json = (JSONObject) JSONObject.toJSON(labPlanSiteRel);
-            labPlanSiteList.add(json);
-        });
-        CoreBuilder.insert().saveBatch(labPlanSiteList, new LabPlanSiteRel());
-        //往计划场地科室关联表中存数据
-        List<JSONObject> deptList = (List<JSONObject>) data.get("deptList");
         List<JSONObject> labPlanSiteDeptList = new ArrayList<>();
-        deptList.forEach(labDepartmentInfo -> {
+        List<JSONObject> labPlanSiteDeptList1 = new ArrayList<>();
+
+        List<List<String>> deptList = (List<List<String>>) data.get("deptList");
+
+        List<SysOrganInfo> list = CoreBuilder.select().list(SysOrganInfo.class);
+        HashMap<String, String> deptHashMap = new HashMap<>();
+        for (SysOrganInfo organInfo : list) {
+            deptHashMap.put(organInfo.getId(), organInfo.getNodeName());
+        }
+        HashSet hashSet = new HashSet();
+        for (List<String> s : deptList) {
+            String deptName = deptHashMap.get(s.get(s.size() - 1));
+            String siteName = deptHashMap.get(s.get(s.size() - 2));
+            if(!hashSet.contains(s.get(s.size() - 2))){
+                //往计划场地关联表中存数据
+                LabPlanSiteRel labPlanSiteRel = new LabPlanSiteRel();
+                labPlanSiteRel.setSiteId(s.get(s.size() - 2));
+                labPlanSiteRel.setSiteName(siteName);
+                labPlanSiteRel.setPlanId(bean.getPlanId());
+                labPlanSiteRel.setPlanSiteId(IdUtil.fastSimpleUUID());
+                JSONObject json = (JSONObject) JSONObject.toJSON(labPlanSiteRel);
+                labPlanSiteList.add(json);
+            }
+            hashSet.add(s.get(s.size() - 2));
+            //往计划科室关联表中存数据
             LabPlanSiteDepartmentRel labPlanSiteDeptRel = new LabPlanSiteDepartmentRel();
-            BeanUtil.copyProperties(labDepartmentInfo, labPlanSiteDeptRel);
+            labPlanSiteDeptRel.setDeptId(s.get(s.size() - 1));
+            labPlanSiteDeptRel.setDeptName(deptName);
             labPlanSiteDeptRel.setPlanId(bean.getPlanId());
             labPlanSiteDeptRel.setPlanSiteDeptId(IdUtil.fastSimpleUUID());
-            JSONObject json = (JSONObject) JSONObject.toJSON(labPlanSiteDeptRel);
-            labPlanSiteDeptList.add(json);
-        });
+            JSONObject json1 = (JSONObject) JSONObject.toJSON(labPlanSiteDeptRel);
+            labPlanSiteDeptList.add(json1);
+            //往计划场地科室记录表中存数据
+            LabPlanSiteDeptRel labPlanSiteDeptRel1 = new LabPlanSiteDeptRel();
+            labPlanSiteDeptRel1.setPlanId(bean.getPlanId());
+            labPlanSiteDeptRel1.setSiteDeptName(siteName + deptName);
+            JSONObject json2 = (JSONObject) JSONObject.toJSON(labPlanSiteDeptRel1);
+            labPlanSiteDeptList1.add(json2);
+        }
+
+
+
+        CoreBuilder.insert().saveBatch(labPlanSiteList, new LabPlanSiteRel());
         CoreBuilder.insert().saveBatch(labPlanSiteDeptList, new LabPlanSiteDepartmentRel());
+        CoreBuilder.insert().saveBatch(labPlanSiteDeptList1, new LabPlanSiteDeptRel());
+        CoreBuilder.update().eq("plan_id", bean.getPlanId()).set("site_total", hashSet.size()).edit(LabPlanInfo.class);
+
         //如果是发布状态 要下发试卷
         //TODO 下发员工id name 所在地区id name
         if (bean.getStatus().equals(LabConstant.PLAN_STATUS_OK)) {
             List<JSONObject> labDataInfoList = new ArrayList<>();
-            for (JSONObject jsonObject : deptList) {
+            for (List<String> s : deptList) {
                 LabDataInfo labDataInfo = new LabDataInfo();
                 BeanUtil.copyProperties(bean, labDataInfo);
                 labDataInfo.setDataId(IdUtil.fastSimpleUUID());
-                labDataInfo.setDataDeptId(jsonObject.getString("deptId"));
-                labDataInfo.setDataDeptName(jsonObject.getString("deptName"));
+                labDataInfo.setDataDeptId(s.get(s.size() - 1));
+                labDataInfo.setDataDeptName(deptHashMap.get(s.get(s.size() - 1)));
                 //labDataInfo.setDeptId(s.getDeptName());
                 JSONObject json = (JSONObject) JSONObject.toJSON(labDataInfo);
                 labDataInfoList.add(json);
