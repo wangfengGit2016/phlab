@@ -1,7 +1,6 @@
 package com.ylhl.phlab.param;
 
 import com.alibaba.fastjson.JSONObject;
-import com.ylhl.phlab.annotation.Comment;
 import com.ylhl.phlab.annotation.TableField;
 import com.ylhl.phlab.annotation.TableId;
 import com.ylhl.phlab.mapper.Page;
@@ -33,9 +32,6 @@ public class TraQuestionInfoParam extends Page<TraQuestionInfoParam> {
     private Integer businessType;
     @ApiModelProperty("分值")
     private Integer score;
-    @TableField(alias = "dept_name")
-    @ApiModelProperty("科室")
-    private String deptName;
     @ApiModelProperty("标签")
     private String tag;
     @ApiModelProperty("选项内容")

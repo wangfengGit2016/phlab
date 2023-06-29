@@ -2,14 +2,13 @@ package com.ylhl.phlab.service.impl;
 
 import cn.hutool.core.bean.BeanUtil;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import cn.hutool.core.util.IdUtil;
 import com.alibaba.fastjson.JSONObject;
 import com.ylhl.phlab.consts.CommonConstant;
+import com.ylhl.phlab.domain.TraPaperQuestionRel;
 import com.ylhl.phlab.domain.TraTagInfo;
 import lombok.extern.slf4j.Slf4j;
 import com.ylhl.phlab.service.IService;
@@ -31,12 +30,10 @@ public class TraQuestionInfoService implements IService {
         log.info("{}", data);
         Page<TraQuestionInfo> page = new Page<>(data);
         String tag = data.getString("tag");
-        String deptName = data.getString("deptName");
         String id = data.getString("uniqueId");
         String type = data.getString("questionType");
         CoreBuilder.select()
                 .like(StringUtils.isNotBlank(tag), "tag", tag)
-                .like(StringUtils.isNotBlank(deptName), "dept_name", deptName)
                 .like(StringUtils.isNotBlank(id), "unique_id", id)
                 .eq(StringUtils.isNotBlank(type), "question_type", type)
                 .desc("create_time").page(page, TraQuestionInfo.class);
@@ -50,12 +47,10 @@ public class TraQuestionInfoService implements IService {
         log.info("{}", data);
         JSONObject res = new JSONObject();
         String tag = data.getString("tag");
-        String deptName = data.getString("deptName");
         String id = data.getString("unique_id");
         String type = data.getString("questionType");
         List<TraQuestionInfo> list = CoreBuilder.select()
                 .like(StringUtils.isNotBlank(tag), "tag", tag)
-                .like(StringUtils.isNotBlank(deptName), "dept_name", deptName)
                 .like(StringUtils.isNotBlank(id), "unique_id", id)
                 .eq(StringUtils.isNotBlank(type), "question_type", type)
                 .desc("create_time").list(TraQuestionInfo.class);
@@ -103,8 +98,27 @@ public class TraQuestionInfoService implements IService {
     public JSONObject delete(JSONObject data) {
         log.info("{}", data);
         JSONObject res = new JSONObject();
-        List<String> deleteList = data.getJSONArray("questionIds").toJavaList(String.class);
-        CoreBuilder.delete().in("question_id", deleteList).remove(TraQuestionInfo.class);
+        List<String> deleteIds = data.getJSONArray("questionIds").toJavaList(String.class);
+        // 已被引用的题目不可删除
+        List<String> failIds = new ArrayList<>();
+        Set<String> quoteIds = CoreBuilder.select().list(TraPaperQuestionRel.class)
+                .stream().map(TraPaperQuestionRel::getQuestionId).collect(Collectors.toSet());
+        for (String id : deleteIds){
+            if (quoteIds.contains(id)){
+                failIds.add(id);
+            }
+        }
+        deleteIds.removeAll(failIds);
+        CoreBuilder.delete().in("question_id", deleteIds).remove(TraQuestionInfo.class);
+        if (!failIds.isEmpty()){
+            List<TraQuestionInfo> questionInfos = CoreBuilder.select().in("question_id", failIds).list(TraQuestionInfo.class);
+            List<Integer> uniqueIds = questionInfos.stream().map(TraQuestionInfo::getUniqueId).collect(Collectors.toList());
+            StringBuilder builder = new StringBuilder();
+            for (Integer id : uniqueIds){
+                builder.append(",").append(id);
+            }
+            throw new RuntimeException("ID为:" + builder.substring(1) + "的题目已被试卷选用，无法删除");
+        }
         return res;
     }
 
