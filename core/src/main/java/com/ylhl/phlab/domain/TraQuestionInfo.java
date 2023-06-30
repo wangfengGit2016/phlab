@@ -21,7 +21,7 @@ public class TraQuestionInfo {
     private String questionTitle;
     @TableField(alias = "question_type")
     @Comment("题目类型  0单选题 1多选题 2判断题 3填空题 4主观题")
-    private Integer questionType;
+    private String questionType;
     @TableField(alias = "question_content")
     @Comment("选项内容")
     private String questionContent;

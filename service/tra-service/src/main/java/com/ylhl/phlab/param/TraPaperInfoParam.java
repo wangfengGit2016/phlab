@@ -1,5 +1,6 @@
 package com.ylhl.phlab.param;
 
+import com.alibaba.fastjson.JSONObject;
 import com.ylhl.phlab.annotation.TableField;
 import com.ylhl.phlab.annotation.TableId;
 import com.ylhl.phlab.domain.TraPaperInfo;
@@ -8,6 +9,8 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+
+import java.util.List;
 
 
 @ApiModel("试卷信息")
@@ -27,6 +30,8 @@ public class TraPaperInfoParam extends Page<TraPaperInfo> {
     @TableField(alias = "question_count")
     @ApiModelProperty("题目数量")
     private Integer questionCount;
+    @ApiModelProperty("题目集合")
+    private List<JSONObject> items;
     @ApiModelProperty("展示唯一id")
     @TableField(alias = "unique_id")
     private String uniqueId;
