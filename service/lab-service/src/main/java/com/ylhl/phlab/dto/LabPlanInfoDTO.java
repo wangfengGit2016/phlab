@@ -88,6 +88,10 @@ public class LabPlanInfoDTO extends Page<LabPlanInfoDTO> {
     private String deleted;
     @ApiModelProperty("文件集合")
     private List<JSONObject> fileList;
+    @ApiModelProperty("表头集合")
+    private List<JSONObject> headList;
+    @ApiModelProperty("表体集合")
+    private List<JSONObject> bodyList;
     @NotNull(message = "选择下级单位不能为空")
     @ApiModelProperty("科室集合")
     private List<List<String>> deptList;
