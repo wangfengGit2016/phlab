@@ -455,8 +455,10 @@ public class LabPlanInfoService implements IService {
     public JSONObject typeResult(JSONObject data) {
         log.info("{}", data);
         JSONObject res = new JSONObject();
-        List<LabPlanTypeRel> list = CoreBuilder.select().eq("type_id", data.getString("typeId")).eq("form", data.getString("form")).list(LabPlanTypeRel.class);
-        res.put("data", list);
+        List<LabPlanTypeRel> judgList = CoreBuilder.select().eq("type_id", data.getString("typeId")).eq("form", "0").list(LabPlanTypeRel.class);
+        List<LabPlanTypeRel> fluoList = CoreBuilder.select().eq("type_id", data.getString("typeId")).eq("form", "1").list(LabPlanTypeRel.class);
+        res.put("judgList", judgList);
+        res.put("fluoList", fluoList);
         return res;
     }
 }

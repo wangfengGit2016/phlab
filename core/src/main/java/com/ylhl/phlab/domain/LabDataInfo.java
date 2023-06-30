@@ -100,6 +100,15 @@ public class LabDataInfo {
     @TableField(alias = "plan_phone")
     @Comment("计划联系人手机号")
     private String planPhone;
+    @TableField(alias = "data_excel_head")
+    @Comment("数据表头信息")
+    private String dataExcelHead;
+    @TableField(alias = "data_excel_body")
+    @Comment("数据表体信息")
+    private String dataExcelBody;
+    @TableField(alias = "file_message")
+    @Comment("文件反显字段")
+    private String fileMessage;
     @Comment("具体内容")
     private String context;
     @TableField(alias = "data_dept_id")

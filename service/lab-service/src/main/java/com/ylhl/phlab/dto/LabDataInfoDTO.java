@@ -6,6 +6,7 @@ import com.ylhl.phlab.annotation.Table;
 import com.ylhl.phlab.annotation.TableField;
 import com.ylhl.phlab.annotation.TableId;
 import com.ylhl.phlab.mapper.Page;
+import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
 import java.util.Date;
@@ -44,6 +45,8 @@ public class LabDataInfoDTO extends Page<LabDataInfoDTO> {
     private String title;
     private String planUserName;
     private String planPhone;
+    private String dataExcelHead;
+    private String dataExcelBody;
     private String context;
     private String dataDeptId;
     private String dataDeptName;
@@ -57,5 +60,6 @@ public class LabDataInfoDTO extends Page<LabDataInfoDTO> {
     private String deleteName;
     private Date deleteTime;
     private String deleted;
+    private String fileMessage;
     private List<JSONObject> fileList;
 }
