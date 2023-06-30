@@ -1,6 +1,7 @@
 package com.ylhl.phlab.param;
 
 import com.alibaba.fastjson.JSONObject;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.ylhl.phlab.annotation.TableField;
 import com.ylhl.phlab.annotation.TableId;
 import com.ylhl.phlab.domain.TraPaperInfo;
@@ -10,6 +11,7 @@ import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
+import java.util.Date;
 import java.util.List;
 
 
@@ -21,15 +23,22 @@ public class TraPaperInfoParam extends Page<TraPaperInfo> {
     @TableField(alias = "paper_id")
     @ApiModelProperty("")
     private String paperId;
+    @ApiModelProperty("批量删除试卷id")
+    private List<String> paperIds;
     @TableField(alias = "paper_name")
     @ApiModelProperty("试卷名称")
     private String paperName;
-    @TableField(alias = "paper_type")
-    @ApiModelProperty("试卷类型 1.固定试卷 2.限时试卷")
-    private String paperType;
     @TableField(alias = "question_count")
     @ApiModelProperty("题目数量")
     private Integer questionCount;
+    @TableField(alias = "start_exam_time")
+    @ApiModelProperty("开始考试时间")
+    @JsonFormat(pattern = "yyyy-MM-dd", timezone = "GMT+8")
+    private Date startExamTime;
+    @TableField(alias = "end_exam_time")
+    @JsonFormat(pattern = "yyyy-MM-dd", timezone = "GMT+8")
+    @ApiModelProperty("考试截至时间")
+    private Date endExamTime;
     @ApiModelProperty("题目集合")
     private List<JSONObject> items;
     @ApiModelProperty("展示唯一id")

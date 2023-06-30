@@ -1,5 +1,6 @@
 package com.ylhl.phlab.domain;
 
+import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import java.util.Date;
 import com.ylhl.phlab.annotation.Table;
@@ -18,17 +19,23 @@ public class TraPaperInfo {
     @TableField(alias = "paper_name")
     @Comment("试卷名称")
     private String paperName;
-    @TableField(alias = "paper_type")
-    @Comment("试卷类型 1.固定试卷 2.限时试卷")
-    private String paperType;
     @TableField(alias = "question_count")
     @Comment("题目数量")
     private Integer questionCount;
-    @TableField(alias = "pass_socre")
+    @TableField(alias = "unique_id")
+    @Comment("展示唯一id")
+    private Integer uniqueId;
+    @TableField(alias = "start_exam_time")
+    @Comment("开始考试时间")
+    private Date startExamTime;
+    @TableField(alias = "end_exam_time")
+    @Comment("考试截至时间")
+    private Date endExamTime;
+    @TableField(alias = "pass_score")
     @Comment("及格分数")
-    private Integer passScore;
+    private String passScore;
     @Comment("试卷总分")
-    private Integer score;
+    private String score;
     @TableField(alias = "exam_duration")
     @Comment("考试时长(分钟)")
     private Integer examDuration;

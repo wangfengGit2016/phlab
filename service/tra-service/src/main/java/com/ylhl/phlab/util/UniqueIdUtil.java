@@ -7,6 +7,7 @@ import com.ylhl.phlab.mapper.CoreBuilder;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 
 public class UniqueIdUtil {
@@ -18,6 +19,13 @@ public class UniqueIdUtil {
         } catch (Exception e){
             maxIdList = new ArrayList<>();
         }
-        return maxIdList.isEmpty() ? CommonConstant.NUM_START : maxIdList.get(0).getInteger("unique_id") + CommonConstant.NUM_STEP;
+        if (maxIdList.isEmpty() || maxIdList.get(0)==null || maxIdList.get(0).getInteger("unique_id") == null){
+            return CommonConstant.NUM_START;
+        }
+        Integer existId = maxIdList.get(0).getInteger("unique_id");
+        if (Objects.isNull(existId)){
+            return CommonConstant.NUM_START;
+        }
+        return existId + CommonConstant.NUM_STEP;
     }
 }

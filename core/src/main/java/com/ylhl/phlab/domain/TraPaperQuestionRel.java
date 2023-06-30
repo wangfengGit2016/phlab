@@ -23,7 +23,18 @@ public class TraPaperQuestionRel {
     @TableField(alias = "question_type")
     @Comment("题型")
     private String questionType;
+    @TableField(alias = "question_sort")
     @Comment("排序")
-    private Integer sort;
+    private Integer questionSort;
+    @TableField(alias = "module_sort")
+    @Comment("排序")
+    private Integer moduleSort;
+    @TableField(alias = "module_name")
+    @Comment("模块名称")
+    private String moduleName;
+    @TableField(alias = "score")
+    @Comment("分值")
+    private String score;
+
 
 }
