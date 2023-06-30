@@ -368,6 +368,8 @@ public class LabPlanInfoService implements IService {
         JSONObject jsonObjectBody = JSON.parseObject(excelBody);
         bean.put("bodyList",jsonObjectBody.get("bodyList"));
 
+        bean.remove("excelHead");
+        bean.remove("excelHead");
         bean.remove("deptMessage");
         bean.remove("fileMessage");
         List<LabPlanSiteDeptRel> siteDeptList = CoreBuilder.select().eq("plan_id", data.getString("planId")).list(LabPlanSiteDeptRel.class);
