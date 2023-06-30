@@ -38,7 +38,6 @@ public class LabDataInfoService implements IService {
                 .desc("create_time")
                 .page(page, LabDataInfo.class);
 
-        System.out.println("搜索出来的条数为"+page.getTotal());
         return page.toJson();
     }
 

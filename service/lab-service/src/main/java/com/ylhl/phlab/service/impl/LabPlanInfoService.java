@@ -122,6 +122,8 @@ public class LabPlanInfoService implements IService {
         bean.setDeptMessage("{\"deptList\":"+data.getString("deptList")+"}");
         /*bean.setFileMessage(data.getString("fileList"));
         bean.setDeptMessage(data.getString("deptList"));*/
+        bean.setExcelHead("{\"excelHead\":"+data.getString("excelHead")+"}");
+        bean.setExcelBody("{\"excelBody\":"+data.getString("excelBody")+"}");
         res.put("status", CoreBuilder.insert().save(bean));
 
         //往计划附件表中存数据
@@ -261,6 +263,8 @@ public class LabPlanInfoService implements IService {
         }
         bean.setFileMessage("{\"fileList\":"+data.getString("fileList")+"}");
         bean.setDeptMessage("{\"deptList\":"+data.getString("deptList")+"}");
+        bean.setExcelHead("{\"excelHead\":"+data.getString("excelHead")+"}");
+        bean.setExcelBody("{\"excelBody\":"+data.getString("excelBody")+"}");
         CoreBuilder.update().edit(bean);
 
         //往计划附件表中存数据
@@ -356,6 +360,14 @@ public class LabPlanInfoService implements IService {
         String deptMessage = bean.getString("deptMessage");
         JSONObject jsonObject1 = JSON.parseObject(deptMessage);
         bean.put("deptList",jsonObject1.get("deptList"));
+
+        String excelHead = bean.getString("excelHead");
+        JSONObject jsonObjectHead = JSON.parseObject(excelHead);
+        bean.put("excelHead",jsonObjectHead.get("excelHead"));
+        String excelBody = bean.getString("excelBody");
+        JSONObject jsonObjectBody = JSON.parseObject(excelBody);
+        bean.put("excelBody",jsonObjectBody.get("excelBody"));
+
         bean.remove("deptMessage");
         bean.remove("fileMessage");
         List<LabPlanSiteDeptRel> siteDeptList = CoreBuilder.select().eq("plan_id", data.getString("planId")).list(LabPlanSiteDeptRel.class);
@@ -427,7 +439,6 @@ public class LabPlanInfoService implements IService {
             }).collect(Collectors.toList());
             res.put("list", organInfoVOList);
         }
-
         return res;
     }
 
@@ -441,4 +452,11 @@ public class LabPlanInfoService implements IService {
     }
 
 
+    public JSONObject typeResult(JSONObject data) {
+        log.info("{}", data);
+        JSONObject res = new JSONObject();
+        List<LabPlanTypeRel> list = CoreBuilder.select().eq("type_id", data.getString("typeId")).eq("form", data.getString("form")).list(LabPlanTypeRel.class);
+        res.put("data", list);
+        return res;
+    }
 }

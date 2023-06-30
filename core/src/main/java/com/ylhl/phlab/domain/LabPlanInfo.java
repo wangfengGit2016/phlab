@@ -65,6 +65,12 @@ public class LabPlanInfo {
     private String needEval;
     @Comment("发布状态 0：待发布 1：已发布")
     private String status;
+    @TableField(alias = "excel_head")
+    @Comment("表头信息")
+    private String excelHead;
+    @TableField(alias = "excel_body")
+    @Comment("表体信息")
+    private String excelBody;
     @TableField(alias = "create_id")
     @Comment("创建人id")
     private String createId;
