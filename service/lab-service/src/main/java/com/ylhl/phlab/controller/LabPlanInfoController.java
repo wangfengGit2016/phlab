@@ -3,6 +3,7 @@ package com.ylhl.phlab.controller;
 import com.alibaba.fastjson.JSONObject;
 import com.ylhl.phlab.domain.LabPlanInfo;
 import com.ylhl.phlab.dto.LabPlanInfoDTO;
+import com.ylhl.phlab.dto.LabPlanTypeRelDTO;
 import com.ylhl.phlab.dto.SysOrganInfoDTO;
 import com.ylhl.phlab.service.impl.LabPlanInfoService;
 import io.swagger.annotations.Api;
@@ -65,5 +66,11 @@ public class LabPlanInfoController {
     @PostMapping(value = "/siteAndDeptTree")
     public JSONObject siteAndDeptTree(@RequestBody SysOrganInfoDTO param) {
         return labPlanInfoService.siteAndDeptTree((JSONObject) JSONObject.toJSON(param));
+    }
+
+    @ApiOperation("下发计划盲样拉取结果")
+    @PostMapping(value = "/typeResult")
+    public JSONObject typeResult(@RequestBody LabPlanTypeRelDTO param) {
+        return labPlanInfoService.typeResult((JSONObject) JSONObject.toJSON(param));
     }
 }

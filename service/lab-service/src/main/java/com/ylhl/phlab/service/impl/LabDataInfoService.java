@@ -9,6 +9,7 @@ import java.util.List;
 
 import cn.hutool.core.util.IdUtil;
 import cn.hutool.core.util.ObjectUtil;
+import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.ylhl.phlab.constant.LabConstant;
 import com.ylhl.phlab.domain.*;
@@ -38,7 +39,6 @@ public class LabDataInfoService implements IService {
                 .desc("create_time")
                 .page(page, LabDataInfo.class);
 
-        System.out.println("搜索出来的条数为"+page.getTotal());
         return page.toJson();
     }
 
@@ -78,7 +78,7 @@ public class LabDataInfoService implements IService {
             AssertUtil.isTrue(true, "未领取样本不能上报实验结果！");
         }
         LabDataInfo bean = BeanUtil.toBean(data, LabDataInfo.class);
-        //往计划附件表中存数据
+        //往数据附件表中存数据
         List<JSONObject> fileList = (List<JSONObject>) data.get("fileList");
         List<JSONObject> labDataFileRelList = new ArrayList<>();
         fileList.forEach(sysFileInfo -> {
@@ -89,10 +89,15 @@ public class LabDataInfoService implements IService {
             labDataFileRelList.add(json);
         });
         CoreBuilder.insert().saveBatch(labDataFileRelList, new LabDataFileRel());
+        //TODO 往数据盲样结果关联表中存数据
+
         //如果数据上传 将该数据变为待评价状态
         if (data.getString("uploadDataStatus").equals(LabConstant.UPLOAD_DATA_STATUS_YES)) {
             bean.setEvalStatus(LabConstant.EVAL_STATUS_NO);
         }
+        bean.setFileMessage("{\"fileList\":"+data.getString("fileList")+"}");
+        bean.setDataExcelHead("{\"dataExcelHead\":"+data.getString("dataExcelHead")+"}");
+        bean.setDataExcelBody("{\"dataExcelBody\":"+data.getString("dataExcelBody")+"}");
         CoreBuilder.update().edit(bean);
         return res;
     }
@@ -104,15 +109,25 @@ public class LabDataInfoService implements IService {
 
         JSONObject bean = CoreBuilder.select()
                 .eq("plan_id", dataPlan.getString("planId")).one(LabPlanInfo.class);
-        //去计划文件关联表中拿附件信息
+        /*//去计划文件关联表中拿附件信息
         List<LabPlanFileRel> fileList = CoreBuilder.select().eq("plan_id",dataPlan.getString("planId")).list(LabPlanFileRel.class);
         bean.put("fileList", fileList);
         //去数据文件关联表中拿附件信息
         List<LabDataFileRel> dataFileList = CoreBuilder.select().eq("business_id", data.getString("dataId")).list(LabDataFileRel.class);
-        bean.put("dataFileList", dataFileList);
+        bean.put("dataFileList", dataFileList);*/
         //TODO 评价附件里去拿评价数据
         List<LabDataEvalDetail> dataEvalDetailList = CoreBuilder.select().eq("data_id", data.getString("dataId")).list(LabDataEvalDetail.class);
         bean.put("dataEvalDetailList", dataEvalDetailList);
+        String dataExcelHead = bean.getString("dataExcelHead");
+        JSONObject jsonObjectHead = JSON.parseObject(dataExcelHead);
+        bean.put("dataExcelHead",jsonObjectHead.get("dataExcelHead"));
+        String dataExcelBody = bean.getString("dataExcelBody");
+        JSONObject jsonObjectBody = JSON.parseObject(dataExcelBody);
+        bean.put("dataExcelBody",jsonObjectBody.get("dataExcelBody"));
+        String fileMessage = bean.getString("fileMessage");
+        JSONObject jsonObject = JSON.parseObject(fileMessage);
+        bean.put("fileList",jsonObject.get("fileList"));
+        bean.remove("fileMessage");
         return bean;
     }
 
@@ -127,7 +142,7 @@ public class LabDataInfoService implements IService {
         CoreBuilder.update().eq("plan_id",dataPlan.getString("planId")).set("need_eval",LabConstant.NEED_EVAL_NEED).edit(LabPlanInfo.class);
         //删除原来的附件
         CoreBuilder.delete().eq("business_id", data.getString("dataId")).remove(LabPlanFileRel.class);
-        //往计划附件表中存数据
+        //往数据附件表中存数据
         List<JSONObject> fileList = (List<JSONObject>) data.get("fileList");
         List<JSONObject> labDataFileRelList = new ArrayList<>();
         fileList.forEach(sysFileInfo -> {
@@ -138,6 +153,10 @@ public class LabDataInfoService implements IService {
             labDataFileRelList.add(json);
         });
         CoreBuilder.insert().saveBatch(labDataFileRelList, new LabDataFileRel());
+        //往数据盲样结果关联表中存数据
+        bean.setFileMessage("{\"fileList\":"+data.getString("fileList")+"}");
+        bean.setDataExcelHead("{\"dataExcelHead\":"+data.getString("dataExcelHead")+"}");
+        bean.setDataExcelBody("{\"dataExcelBody\":"+data.getString("dataExcelBody")+"}");
         CoreBuilder.update().edit(bean);
         return res;
     }
