@@ -90,7 +90,17 @@ public class LabDataInfoService implements IService {
         });
         CoreBuilder.insert().saveBatch(labDataFileRelList, new LabDataFileRel());
         //TODO 往数据盲样结果关联表中存数据
-
+        List<JSONObject> typeList = (List<JSONObject>) data.get("typeList");
+        List<JSONObject> labDataTypeRelList = new ArrayList<>();
+        typeList.forEach(typeInfo -> {
+            LabDataTypeRel labDataTyeRel = new LabDataTypeRel();
+            BeanUtil.copyProperties(typeInfo, labDataTyeRel);
+            labDataTyeRel.setDataTypeRelId(IdUtil.fastSimpleUUID());
+            labDataTyeRel.setDataId(bean.getDataId());
+            JSONObject json = (JSONObject) JSONObject.toJSON(labDataTyeRel);
+            labDataTypeRelList.add(json);
+        });
+        CoreBuilder.insert().saveBatch(labDataTypeRelList, new LabDataTypeRel());
         //如果数据上传 将该数据变为待评价状态
         if (data.getString("uploadDataStatus").equals(LabConstant.UPLOAD_DATA_STATUS_YES)) {
             bean.setEvalStatus(LabConstant.EVAL_STATUS_NO);
@@ -153,7 +163,20 @@ public class LabDataInfoService implements IService {
             labDataFileRelList.add(json);
         });
         CoreBuilder.insert().saveBatch(labDataFileRelList, new LabDataFileRel());
-        //往数据盲样结果关联表中存数据
+
+        //TODO 往数据盲样结果关联表中存数据
+        List<JSONObject> typeList = (List<JSONObject>) data.get("typeList");
+        List<JSONObject> labDataTypeRelList = new ArrayList<>();
+        typeList.forEach(typeInfo -> {
+            LabDataTypeRel labDataTyeRel = new LabDataTypeRel();
+            BeanUtil.copyProperties(typeInfo, labDataTyeRel);
+            labDataTyeRel.setDataTypeRelId(IdUtil.fastSimpleUUID());
+            labDataTyeRel.setDataId(bean.getDataId());
+            JSONObject json = (JSONObject) JSONObject.toJSON(labDataTyeRel);
+            labDataTypeRelList.add(json);
+        });
+        CoreBuilder.insert().saveBatch(labDataTypeRelList, new LabDataTypeRel());
+
         bean.setFileMessage("{\"fileList\":"+data.getString("fileList")+"}");
         bean.setDataExcelHead("{\"dataExcelHead\":"+data.getString("dataExcelHead")+"}");
         bean.setDataExcelBody("{\"dataExcelBody\":"+data.getString("dataExcelBody")+"}");

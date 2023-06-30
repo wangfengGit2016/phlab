@@ -10,6 +10,9 @@ import java.util.Date;
 @Data
 @Table("lab_plan_type_rel")
 public class LabPlanTypeRel {
+    @TableField(alias = "plan_type_rel_id")
+    @Comment("计划盲样结果id")
+    private String planTypeRelId;
     @TableField(alias = "type_id")
     @Comment("盲样种类id")
     private String typeId;
