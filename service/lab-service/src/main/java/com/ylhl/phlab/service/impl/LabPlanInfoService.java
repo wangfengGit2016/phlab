@@ -122,8 +122,8 @@ public class LabPlanInfoService implements IService {
         bean.setDeptMessage("{\"deptList\":"+data.getString("deptList")+"}");
         /*bean.setFileMessage(data.getString("fileList"));
         bean.setDeptMessage(data.getString("deptList"));*/
-        bean.setExcelHead("{\"excelHead\":"+data.getString("excelHead")+"}");
-        bean.setExcelBody("{\"excelBody\":"+data.getString("excelBody")+"}");
+        bean.setExcelHead("{\"headList\":"+data.getString("headList")+"}");
+        bean.setExcelBody("{\"bodyList\":"+data.getString("bodyList")+"}");
         res.put("status", CoreBuilder.insert().save(bean));
 
         //往计划附件表中存数据
@@ -263,8 +263,8 @@ public class LabPlanInfoService implements IService {
         }
         bean.setFileMessage("{\"fileList\":"+data.getString("fileList")+"}");
         bean.setDeptMessage("{\"deptList\":"+data.getString("deptList")+"}");
-        bean.setExcelHead("{\"excelHead\":"+data.getString("excelHead")+"}");
-        bean.setExcelBody("{\"excelBody\":"+data.getString("excelBody")+"}");
+        bean.setExcelHead("{\"headList\":"+data.getString("headList")+"}");
+        bean.setExcelBody("{\"bodyList\":"+data.getString("bodyList")+"}");
         CoreBuilder.update().edit(bean);
 
         //往计划附件表中存数据
@@ -363,10 +363,10 @@ public class LabPlanInfoService implements IService {
 
         String excelHead = bean.getString("excelHead");
         JSONObject jsonObjectHead = JSON.parseObject(excelHead);
-        bean.put("excelHead",jsonObjectHead.get("excelHead"));
+        bean.put("headList",jsonObjectHead.get("headList"));
         String excelBody = bean.getString("excelBody");
         JSONObject jsonObjectBody = JSON.parseObject(excelBody);
-        bean.put("excelBody",jsonObjectBody.get("excelBody"));
+        bean.put("bodyList",jsonObjectBody.get("bodyList"));
 
         bean.remove("deptMessage");
         bean.remove("fileMessage");
