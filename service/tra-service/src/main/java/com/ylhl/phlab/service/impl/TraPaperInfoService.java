@@ -43,44 +43,7 @@ public class TraPaperInfoService implements IService {
     public JSONObject insert(JSONObject data) {
         log.info("{}", data);
         JSONObject res = new JSONObject();
-        TraPaperInfo bean = new TraPaperInfo();
-        String paperId = IdUtil.fastSimpleUUID();
-        bean.setPaperId(paperId);
-        bean.setPaperName(data.getString("paperName"));
-        bean.setScore(data.getString("score"));
-        bean.setExamDuration(data.getInteger("examDuration"));
-        bean.setUniqueId(UniqueIdUtil.getId(TraPaperInfo.class));
-        bean.setPassScore(data.getString("passScore"));
-        bean.setStartExamTime(data.getDate("startExamTime"));
-        bean.setEndExamTime(data.getDate("endExamTime"));
-        bean.setCreateId(UserUtil.userId());
-        bean.setCreateName(UserUtil.userName());
-        // 插入关联表
-        final AtomicInteger count = new AtomicInteger(0);
-        List<JSONObject> relInsert = new ArrayList<>();
-        List<JSONObject> items = data.getJSONArray("items").toJavaList(JSONObject.class);
-        items.forEach(item -> {
-            JSONArray questions = item.getJSONArray("questions");
-            count.addAndGet(questions.size());
-            questions.forEach(question -> {
-                TraPaperQuestionRel rel = new TraPaperQuestionRel();
-                // 通用属性
-                rel.setId(IdUtil.fastSimpleUUID());
-                rel.setModuleName(item.getString("moduleName"));
-                rel.setModuleSort(item.getInteger("moduleSort"));
-                // 题目属性
-                JSONObject ques = JSONObject.parseObject(JSONObject.toJSONString(question));
-                rel.setPaperId(paperId);
-                rel.setQuestionId(ques.getString("questionId"));
-                rel.setScore(ques.getString("score"));
-                rel.setQuestionSort(ques.getInteger("questionSort"));
-                rel.setQuestionType(ques.getString("questionType"));
-                relInsert.add((JSONObject) JSONObject.toJSON(rel));
-            });
-        });
-        bean.setQuestionCount(count.get());
-        CoreBuilder.insert().save(bean);
-        CoreBuilder.insert().saveBatch(relInsert, new TraPaperQuestionRel());
+        paperInsert(data, IdUtil.fastSimpleUUID());
         return res;
     }
 
@@ -88,8 +51,8 @@ public class TraPaperInfoService implements IService {
         log.info("{}", data);
         JSONObject res = new JSONObject();
         List<String> paperIds = data.getJSONArray("paperIds").toJavaList(String.class);
-//        List<TraPaperInfo> infos = CoreBuilder.select().in("",paperIds).list();
-        CoreBuilder.delete().eq("paper_id", data.getString("paperId")).remove(TraPaperInfo.class);
+        CoreBuilder.delete().in("paper_id", paperIds).remove(TraPaperInfo.class);
+        CoreBuilder.delete().in("paper_id", paperIds).remove(TraPaperQuestionRel.class);
         return res;
     }
 
@@ -115,4 +78,44 @@ public class TraPaperInfoService implements IService {
         return res;
     }
 
+    public TraPaperInfo paperInsert(JSONObject data, String id){
+        TraPaperInfo bean = new TraPaperInfo();
+        bean.setPaperId(id);
+        bean.setPaperName(data.getString("paperName"));
+        bean.setScore(data.getString("score"));
+        bean.setExamDuration(data.getInteger("examDuration"));
+        bean.setUniqueId(UniqueIdUtil.getId(TraPaperInfo.class));
+        bean.setPassScore(data.getString("passScore"));
+        bean.setStartExamTime(data.getDate("startExamTime"));
+        bean.setEndExamTime(data.getDate("endExamTime"));
+        bean.setCreateId(UserUtil.userId());
+        bean.setCreateName(UserUtil.userName());
+        // 插入关联表
+        final AtomicInteger count = new AtomicInteger(0);
+        List<JSONObject> relInsert = new ArrayList<>();
+        List<JSONObject> items = data.getJSONArray("items").toJavaList(JSONObject.class);
+        items.forEach(item -> {
+            JSONArray questions = item.getJSONArray("questions");
+            count.addAndGet(questions.size());
+            questions.forEach(question -> {
+                TraPaperQuestionRel rel = new TraPaperQuestionRel();
+                // 通用属性
+                rel.setId(IdUtil.fastSimpleUUID());
+                rel.setModuleName(item.getString("moduleName"));
+                rel.setModuleSort(item.getInteger("moduleSort"));
+                // 题目属性
+                JSONObject ques = JSONObject.parseObject(JSONObject.toJSONString(question));
+                rel.setPaperId(id);
+                rel.setQuestionId(ques.getString("questionId"));
+                rel.setScore(ques.getString("score"));
+                rel.setQuestionSort(ques.getInteger("questionSort"));
+                rel.setQuestionType(ques.getString("questionType"));
+                relInsert.add((JSONObject) JSONObject.toJSON(rel));
+            });
+        });
+        bean.setQuestionCount(count.get());
+        CoreBuilder.insert().save(bean);
+        CoreBuilder.insert().saveBatch(relInsert, new TraPaperQuestionRel());
+        return bean;
+    }
 }
