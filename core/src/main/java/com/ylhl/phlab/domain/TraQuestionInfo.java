@@ -30,8 +30,6 @@ public class TraQuestionInfo {
     private Integer uniqueId;
     @Comment("分值")
     private Integer score;
-    @Comment("标签")
-    private String tag;
     @TableField(alias = "correct_answer")
     @Comment("正确答案")
     private String correctAnswer;

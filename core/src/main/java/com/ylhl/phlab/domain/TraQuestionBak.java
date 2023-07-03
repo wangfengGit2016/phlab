@@ -24,8 +24,6 @@ public class TraQuestionBak {
     @TableField(alias = "question_content")
     @Comment("选项内容")
     private String questionContent;
-    @Comment("难度 1-5级 1级最简单")
-    private String difficult;
     @TableField(alias = "correct_answer")
     @Comment("正确答案")
     private String correctAnswer;
