@@ -43,7 +43,7 @@ public class TraPaperInfoService implements IService {
     public JSONObject insert(JSONObject data) {
         log.info("{}", data);
         JSONObject res = new JSONObject();
-        paperInsert(data, IdUtil.fastSimpleUUID());
+        paperControl(data, IdUtil.fastSimpleUUID(),"insert");
         return res;
     }
 
@@ -56,29 +56,33 @@ public class TraPaperInfoService implements IService {
         return res;
     }
 
+    @Transactional
     public JSONObject update(JSONObject data) {
         log.info("{}", data);
         JSONObject res = new JSONObject();
-        TraPaperInfo bean = BeanUtil.toBean(data, TraPaperInfo.class);
-        CoreBuilder.update().edit(bean);
+        String paperId = data.getString("paperId");
+        // 删除关联表
+        CoreBuilder.delete().eq("paper_id", paperId).remove(TraPaperQuestionRel.class);
+        paperControl(data, paperId,"update");
         return res;
     }
 
     public JSONObject detail(JSONObject data) {
         log.info("{}", data);
         JSONObject res = new JSONObject();
-        JSONObject bean = CoreBuilder.select().eq("paper_id", data.getString("paperId")).one(TraPaperInfo.class);
-        res.put("data", bean);
+        String paperId = data.getString("paperId");
+
         return res;
     }
 
     public JSONObject publish(JSONObject data) {
         log.info("{}", data);
         JSONObject res = new JSONObject();
+        CoreBuilder.update().eq("paper_id", data.getString("paperId")).set("status", data.getString("status"));
         return res;
     }
 
-    public TraPaperInfo paperInsert(JSONObject data, String id){
+    public TraPaperInfo paperControl(JSONObject data, String id, String method){
         TraPaperInfo bean = new TraPaperInfo();
         bean.setPaperId(id);
         bean.setPaperName(data.getString("paperName"));
@@ -114,7 +118,13 @@ public class TraPaperInfoService implements IService {
             });
         });
         bean.setQuestionCount(count.get());
-        CoreBuilder.insert().save(bean);
+        if ("insert".equals(method)){
+            CoreBuilder.insert().save(bean);
+        }
+        if ("update".equals(method)){
+            bean.setUniqueId(data.getInteger("uniqueId"));
+            CoreBuilder.update().edit(bean);
+        }
         CoreBuilder.insert().saveBatch(relInsert, new TraPaperQuestionRel());
         return bean;
     }
