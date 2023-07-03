@@ -4,6 +4,7 @@ import cn.dev33.satoken.stp.StpUtil;
 import cn.hutool.core.bean.BeanUtil;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
@@ -108,6 +109,14 @@ public class LabDataInfoService implements IService {
         bean.setFileMessage("{\"fileList\":"+data.getString("fileList")+"}");
         bean.setDataExcelHead("{\"dataExcelHead\":"+data.getString("dataExcelHead")+"}");
         bean.setDataExcelBody("{\"dataExcelBody\":"+data.getString("dataExcelBody")+"}");
+        String userId = (String) StpUtil.getLoginId();
+        SysUserInfo user = CoreBuilder.select().eq("id", userId).oneT(SysUserInfo.class);
+        String userName = user.getUserName();
+        bean.setUploadUserName(userName);
+        bean.setUploadUserName(user.getPhone());
+        Calendar cal = Calendar.getInstance();
+        int year = cal.get(Calendar.YEAR);
+        bean.setUploadTime(year + "年" + cal.get(Calendar.MONTH) + "月" + cal.get(Calendar.DAY_OF_MONTH) + "日");
         CoreBuilder.update().edit(bean);
         return res;
     }
@@ -127,18 +136,34 @@ public class LabDataInfoService implements IService {
         bean.put("dataFileList", dataFileList);*/
         //TODO 评价附件里去拿评价数据
         List<LabDataEvalDetail> dataEvalDetailList = CoreBuilder.select().eq("data_id", data.getString("dataId")).list(LabDataEvalDetail.class);
-        bean.put("dataEvalDetailList", dataEvalDetailList);
+        /*bean.put("dataEvalDetailList", dataEvalDetailList);
         String dataExcelHead = bean.getString("dataExcelHead");
         JSONObject jsonObjectHead = JSON.parseObject(dataExcelHead);
         bean.put("dataExcelHead",jsonObjectHead.get("dataExcelHead"));
         String dataExcelBody = bean.getString("dataExcelBody");
         JSONObject jsonObjectBody = JSON.parseObject(dataExcelBody);
-        bean.put("dataExcelBody",jsonObjectBody.get("dataExcelBody"));
+        bean.put("dataExcelBody",jsonObjectBody.get("dataExcelBody"));*/
         String fileMessage = bean.getString("fileMessage");
         JSONObject jsonObject = JSON.parseObject(fileMessage);
         bean.put("fileList",jsonObject.get("fileList"));
+        String deptMessage = bean.getString("deptMessage");
+        JSONObject jsonObject1 = JSON.parseObject(deptMessage);
+        bean.put("deptList",jsonObject1.get("deptList"));
+
+        String excelHead = bean.getString("excelHead");
+        JSONObject jsonObjectHead = JSON.parseObject(excelHead);
+        bean.put("headList",jsonObjectHead.get("headList"));
+        String excelBody = bean.getString("excelBody");
+        JSONObject jsonObjectBody = JSON.parseObject(excelBody);
+        bean.put("bodyList",jsonObjectBody.get("bodyList"));
+
+        bean.remove("excelHead");
+        bean.remove("excelHead");
+        bean.remove("deptMessage");
         bean.remove("fileMessage");
-        return bean;
+        dataPlan.put("plan",bean);
+
+        return dataPlan;
     }
 
     public JSONObject repair(JSONObject data) {

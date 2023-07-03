@@ -193,6 +193,9 @@ public class LabPlanInfoService implements IService {
 
         //如果是发布状态 要下发试卷
         //TODO 下发员工id name 所在地区id name
+        String userId = (String) StpUtil.getLoginId();
+        SysUserInfo user = CoreBuilder.select().eq("id", userId).oneT(SysUserInfo.class);
+        String userName = user.getUserName();
         if (bean.getStatus().equals(LabConstant.PLAN_STATUS_OK)) {
             List<JSONObject> labDataInfoList = new ArrayList<>();
             for (List<String> s : deptList) {
@@ -201,9 +204,14 @@ public class LabPlanInfoService implements IService {
                 labDataInfo.setDataId(IdUtil.fastSimpleUUID());
                 labDataInfo.setDataDeptId(s.get(s.size() - 1));
                 labDataInfo.setDataDeptName(deptHashMap.get(s.get(s.size() - 1)));
-                //labDataInfo.setDeptId(s.getDeptName());
+                labDataInfo.setStaffId(userId);
+                labDataInfo.setStaffName(userName);
+                labDataInfo.setSiteId(s.get(s.size() - 2));
+                labDataInfo.setSiteName(deptHashMap.get(s.get(s.size() - 2)));
+                labDataInfo.setFileMessage("");
                 JSONObject json = (JSONObject) JSONObject.toJSON(labDataInfo);
                 labDataInfoList.add(json);
+
             }
             CoreBuilder.insert().saveBatch(labDataInfoList, new LabDataInfo());
         }
