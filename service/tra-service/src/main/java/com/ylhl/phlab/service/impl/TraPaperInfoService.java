@@ -150,6 +150,9 @@ public class TraPaperInfoService implements IService {
         publicPaper.setPaperId(publicPaperId);
         publicPaper.setPaperName(paper.getPaperName());
         // TODO 发布状态 将来优化为枚举类
+        if(!"1".equals(data.getString("status"))){
+            throw new RuntimeException("无法取消发布试卷，如有需要可联系管理员删除该试卷");
+        }
         publicPaper.setStatus(data.getString("status"));
         CoreBuilder.delete().eq("paper_id", paperId).remove(TraPaperInfo.class);
         CoreBuilder.insert().save(publicPaper);
