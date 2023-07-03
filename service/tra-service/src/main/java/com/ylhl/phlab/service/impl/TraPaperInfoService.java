@@ -1,9 +1,9 @@
 package com.ylhl.phlab.service.impl;
 
-import cn.hutool.core.bean.BeanUtil;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import cn.hutool.core.util.IdUtil;
@@ -17,6 +17,7 @@ import com.ylhl.phlab.service.IService;
 import com.ylhl.phlab.domain.TraPaperInfo;
 import com.ylhl.phlab.mapper.CoreBuilder;
 import com.ylhl.phlab.mapper.Page;
+import org.apache.commons.lang.StringUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -27,14 +28,30 @@ public class TraPaperInfoService implements IService {
     public JSONObject page(JSONObject data) {
         log.info("{}", data);
         Page<TraPaperInfo> page = new Page<>(data);
-        CoreBuilder.select().page(page, TraPaperInfo.class);
+        String uniqueId = String.valueOf(data.getInteger("uniqueId"));
+        String paperName = data.getString("paperName");
+        String createName = data.getString("createName");
+        CoreBuilder.select()
+                .like(StringUtils.isNotBlank(uniqueId), "unique_id", uniqueId)
+                .like(StringUtils.isNotBlank(paperName), "paper_name", paperName)
+                .like(StringUtils.isNotBlank(createName), "create_name", createName)
+                .between(Objects.nonNull(data.getDate("startTime")), "create_time", data.getDate("startTime"), data.getDate("endTime"))
+                .page(page, TraPaperInfo.class);
         return page.toJson();
     }
 
     public JSONObject list(JSONObject data) {
         log.info("{}", data);
         JSONObject res = new JSONObject();
-        List<TraPaperInfo> list = CoreBuilder.select().list(TraPaperInfo.class);
+        String uniqueId = String.valueOf(data.getInteger("uniqueId"));
+        String paperName = data.getString("paperName");
+        String createName = data.getString("createName");
+        List<TraPaperInfo> list = CoreBuilder.select()
+                .like(StringUtils.isNotBlank(uniqueId), "unique_id", uniqueId)
+                .like(StringUtils.isNotBlank(paperName), "paper_name", paperName)
+                .like(StringUtils.isNotBlank(createName), "create_name", createName)
+                .between(Objects.nonNull(data.getDate("startTime")), "create_time", data.getDate("startTime"), data.getDate("endTime"))
+                .list(TraPaperInfo.class);
         res.put("list", list);
         return res;
     }
