@@ -147,10 +147,16 @@ public class LabDataInfoService implements IService {
             dataPlan.put("dataHeadList", jsonObjectHead.get("dataHeadList"));
         }
 
-        if (ObjectUtil.isNotNull(dataPlan.getString("dataExcelBody"))) {
+        if (ObjectUtil.isNotNull(dataPlan.getString("dataExcelBody")) && !dataPlan.getString("dataExcelBody").equals("")) {
             String dataExcelBody = dataPlan.getString("dataExcelBody");
             JSONObject jsonObjectBody = JSON.parseObject(dataExcelBody);
-            dataPlan.put("dataBodyList", jsonObjectBody.get("dataBodyList"));
+            if (ObjectUtil.isNotNull(jsonObjectBody.get("dataBodyList"))){
+                dataPlan.put("dataBodyList", jsonObjectBody.get("dataBodyList"));
+            }else {
+                dataPlan.put("dataBodyList", new ArrayList<>());
+            }
+        }else{
+            dataPlan.put("dataBodyList", new ArrayList<>());
         }
 
         if (ObjectUtil.isNotNull(bean.getString("fileMessage"))) {
