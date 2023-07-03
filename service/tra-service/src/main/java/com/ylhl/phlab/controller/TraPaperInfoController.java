@@ -22,10 +22,15 @@ public class TraPaperInfoController {
     @Resource
     TraPaperInfoService traPaperInfoService;
 
-    @ApiOperation("试卷分页")
+    @ApiOperation("试卷草稿分页")
     @PostMapping(value="/page")
     public JSONObject page(@RequestBody TraPaperInfoParam param){
         return traPaperInfoService.page((JSONObject) JSONObject.toJSON(param));
+    }
+    @ApiOperation("正式试卷分页")
+    @PostMapping(value="/publicPage")
+    public JSONObject publicPage(@RequestBody TraPaperInfoParam param){
+        return traPaperInfoService.publicPage((JSONObject) JSONObject.toJSON(param));
     }
     @ApiOperation("试卷列表")
     @PostMapping(value="/list")

@@ -5,7 +5,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.atomic.AtomicInteger;
-
 import cn.hutool.core.util.IdUtil;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
@@ -39,19 +38,33 @@ public class TraPaperInfoService implements IService {
                 .page(page, TraPaperInfo.class);
         return page.toJson();
     }
+    public JSONObject publicPage(JSONObject data) {
+        log.info("{}", data);
+        Page<TraPublicPaperInfo> page = new Page<>(data);
+        Integer uniqueId = data.getInteger("uniqueId");
+        String paperName = data.getString("paperName");
+        String createName = data.getString("createName");
+        CoreBuilder.select()
+                .like(Objects.nonNull(uniqueId), "unique_id", String.valueOf(uniqueId))
+                .like(StringUtils.isNotBlank(paperName), "paper_name", paperName)
+                .like(StringUtils.isNotBlank(createName), "create_name", createName)
+                .between(Objects.nonNull(data.getDate("startTime")), "create_time", data.getDate("startTime"), data.getDate("endTime"))
+                .page(page, TraPublicPaperInfo.class);
+        return page.toJson();
+    }
 
     public JSONObject list(JSONObject data) {
         log.info("{}", data);
         JSONObject res = new JSONObject();
-        String uniqueId = String.valueOf(data.getInteger("uniqueId"));
+        Integer uniqueId = data.getInteger("uniqueId");
         String paperName = data.getString("paperName");
         String createName = data.getString("createName");
-        List<TraPaperInfo> list = CoreBuilder.select()
-                .like(StringUtils.isNotBlank(uniqueId), "unique_id", uniqueId)
+        List<TraPublicPaperInfo> list = CoreBuilder.select()
+                .like(Objects.nonNull(uniqueId), "unique_id", String.valueOf(uniqueId))
                 .like(StringUtils.isNotBlank(paperName), "paper_name", paperName)
                 .like(StringUtils.isNotBlank(createName), "create_name", createName)
                 .between(Objects.nonNull(data.getDate("startTime")), "create_time", data.getDate("startTime"), data.getDate("endTime"))
-                .list(TraPaperInfo.class);
+                .list(TraPublicPaperInfo.class);
         res.put("list", list);
         return res;
     }
@@ -70,6 +83,7 @@ public class TraPaperInfoService implements IService {
         List<String> paperIds = data.getJSONArray("paperIds").toJavaList(String.class);
         CoreBuilder.delete().in("paper_id", paperIds).remove(TraPaperInfo.class);
         CoreBuilder.delete().in("paper_id", paperIds).remove(TraPaperQuestionRel.class);
+        CoreBuilder.delete().in("paper_id", paperIds).remove(TraPublicPaperInfo.class);
         CoreBuilder.delete().in("public_paper_id", paperIds).remove(TraQuestionBak.class);
         return res;
     }
@@ -105,11 +119,11 @@ public class TraPaperInfoService implements IService {
         publicPaper.setPaperId(publicPaperId);
         publicPaper.setPaperName(paper.getPaperName());
         // TODO 发布状态 将来优化为枚举类
-        publicPaper.setStatus("1");
+        publicPaper.setStatus(data.getString("status"));
         CoreBuilder.delete().eq("paper_id", paperId).remove(TraPaperInfo.class);
         CoreBuilder.insert().save(publicPaper);
         // 正式题目表
-        List<TraQuestionInfo> questionInfos = CoreBuilder.select().as("q")
+        List<TraQuestionInfo> questionInfos = CoreBuilder.select().select("q.*,r.module_sort,r.module_name,r.question_sort,r.question_score").as("q")
                 .inner(TraPaperQuestionRel.class, "r", "q.question_id=r.question_id")
                 .eq("paper_id", paperId).list(TraQuestionInfo.class);
         List<JSONObject> questionBak = new ArrayList<>();
