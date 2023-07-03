@@ -1,8 +1,10 @@
 package com.ylhl.phlab.mapper;
 
+import cn.dev33.satoken.stp.StpUtil;
 import cn.hutool.extra.spring.SpringUtil;
 import com.alibaba.fastjson.JSONObject;
 import com.ylhl.phlab.config.DataConfig;
+import com.ylhl.phlab.domain.SysUserInfo;
 import org.apache.ibatis.jdbc.SQL;
 import org.apache.ibatis.session.ExecutorType;
 import org.apache.ibatis.session.SqlSession;
@@ -25,6 +27,9 @@ public class InsertBuilder {
     }
 
     public void initData(Object obj){
+        String userId = (String) StpUtil.getLoginId();
+        SysUserInfo user = CoreBuilder.select().eq("id", userId).oneT(SysUserInfo.class);
+        String userName = user.getUserName();
         for(Field field:obj.getClass().getDeclaredFields()){
             field.setAccessible(true);
             try {
@@ -34,6 +39,18 @@ public class InsertBuilder {
                     }
                     if (field.getName().equals(dataConfig.getUpdateTime())) {
                         field.set(obj, new Date());
+                    }
+                    if (field.getName().equals(dataConfig.getCreateId())) {
+                        field.set(obj, userId);
+                    }
+                    if (field.getName().equals(dataConfig.getUpdateId())) {
+                        field.set(obj, userId);
+                    }
+                    if (field.getName().equals(dataConfig.getCreateName())) {
+                        field.set(obj, userName);
+                    }
+                    if (field.getName().equals(dataConfig.getUpdateName())) {
+                        field.set(obj, userName);
                     }
                 }
             } catch(IllegalAccessException e){

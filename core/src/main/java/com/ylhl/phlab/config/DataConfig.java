@@ -14,4 +14,11 @@ public class DataConfig {
     private String isDeleted;
     private String createTime;
     private String updateTime;
+    private String deleteTime;
+    private String createId;
+    private String createName;
+    private String updateId;
+    private String updateName;
+    private String deleteId;
+    private String deleteName;
 }
