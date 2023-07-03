@@ -24,14 +24,23 @@ public class TraQuestionBak {
     @TableField(alias = "question_content")
     @Comment("选项内容")
     private String questionContent;
-    @Comment("难度 1-5级 1级最简单")
-    private String difficult;
     @TableField(alias = "correct_answer")
     @Comment("正确答案")
     private String correctAnswer;
     @TableField(alias = "public_paper_id")
     @Comment("所属试卷id")
     private String publicPaperId;
+    @TableField(alias = "question_sort")
+    @Comment("题目排序")
+    private Integer questionSort;
+    @Comment("分数")
+    private String score;
+    @TableField(alias = "module_sort")
+    @Comment("模块排序")
+    private Integer moduleSort;
+    @TableField(alias = "module_name")
+    @Comment("模块名称")
+    private String moduleName;
     @Comment("答案解析")
     private String analysis;
     @TableField(alias = "pic_path")
