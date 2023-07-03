@@ -141,22 +141,27 @@ public class LabDataInfoService implements IService {
         List<LabDataEvalDetail> dataEvalDetailList = CoreBuilder.select().eq("data_id", data.getString("dataId")).list(LabDataEvalDetail.class);
         bean.put("dataEvalDetailList", dataEvalDetailList);
 
-        if (ObjectUtil.isNotNull(bean.getString("dataExcelHead"))) {
-            String dataExcelHead = bean.getString("dataExcelHead");
+        if (ObjectUtil.isNotNull(dataPlan.getString("dataExcelHead"))) {
+            String dataExcelHead = dataPlan.getString("dataExcelHead");
             JSONObject jsonObjectHead = JSON.parseObject(dataExcelHead);
-            bean.put("dataHeadList", jsonObjectHead.get("dataHeadList"));
+            dataPlan.put("dataHeadList", jsonObjectHead.get("dataHeadList"));
         }
 
-        if (ObjectUtil.isNotNull(bean.getString("dataExcelBody"))) {
-            String dataExcelBody = bean.getString("dataExcelBody");
+        if (ObjectUtil.isNotNull(dataPlan.getString("dataExcelBody"))) {
+            String dataExcelBody = dataPlan.getString("dataExcelBody");
             JSONObject jsonObjectBody = JSON.parseObject(dataExcelBody);
-            bean.put("dataBodyList", jsonObjectBody.get("dataBodyList"));
+            dataPlan.put("dataBodyList", jsonObjectBody.get("dataBodyList"));
         }
 
         if (ObjectUtil.isNotNull(bean.getString("fileMessage"))) {
             String fileMessage = bean.getString("fileMessage");
             JSONObject jsonObject = JSON.parseObject(fileMessage);
             bean.put("fileList", jsonObject.get("fileList"));
+        }
+        if (ObjectUtil.isNotNull(dataPlan.getString("fileMessage")) && !dataPlan.getString("fileMessage").equals("")) {
+            String fileMessage = dataPlan.getString("fileMessage");
+            JSONObject jsonObject = JSON.parseObject(fileMessage);
+            dataPlan.put("dataFileList", jsonObject.get("fileList"));
         }
         if (ObjectUtil.isNotNull(bean.getString("deptMessage"))) {
             String deptMessage = bean.getString("deptMessage");
