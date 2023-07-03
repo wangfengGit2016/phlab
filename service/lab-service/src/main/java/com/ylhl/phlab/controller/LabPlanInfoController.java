@@ -6,6 +6,7 @@ import com.ylhl.phlab.dto.LabPlanInfoDTO;
 import com.ylhl.phlab.dto.LabPlanTypeRelDTO;
 import com.ylhl.phlab.dto.SysOrganInfoDTO;
 import com.ylhl.phlab.service.impl.LabPlanInfoService;
+import com.ylhl.phlab.utils.FieldUtil;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
@@ -37,12 +38,14 @@ public class LabPlanInfoController {
     @ApiOperation("下发计划添加")
     @PostMapping(value = "/add")
     public JSONObject add(@RequestBody LabPlanInfoDTO param) {
+        //FieldUtil.setInsert(param);
         return labPlanInfoService.insert((JSONObject) JSONObject.toJSON(param));
     }
 
     @ApiOperation("下发计划修改")
     @PostMapping(value = "/update")
     public JSONObject update(@RequestBody LabPlanInfoDTO param) {
+        //FieldUtil.setUpdate(param);
         return labPlanInfoService.update((JSONObject) JSONObject.toJSON(param));
     }
     @ApiOperation("下发计划详情")
@@ -54,12 +57,14 @@ public class LabPlanInfoController {
     @ApiOperation("下发计划删除")
     @PostMapping(value = "/delete")
     public JSONObject delete(@RequestBody LabPlanInfoDTO param) {
+        //FieldUtil.setDelete(param);
         return labPlanInfoService.delete((JSONObject) JSONObject.toJSON(param));
     }
 
     @ApiOperation("下发计划撤回")
     @PostMapping(value = "/revoke")
     public JSONObject revoke(@RequestBody LabPlanInfoDTO param) {
+        //FieldUtil.setUpdate(param);
         return labPlanInfoService.revoke((JSONObject) JSONObject.toJSON(param));
     }
     @ApiOperation("下发计划获取场地科室树")

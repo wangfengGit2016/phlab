@@ -1,10 +1,12 @@
 package com.ylhl.phlab.mapper;
 
+import cn.dev33.satoken.stp.StpUtil;
 import cn.hutool.extra.spring.SpringUtil;
 import com.alibaba.fastjson.JSONObject;
 import com.ylhl.phlab.annotation.Table;
 import com.ylhl.phlab.annotation.TableField;
 import com.ylhl.phlab.config.DataConfig;
+import com.ylhl.phlab.domain.SysUserInfo;
 import org.apache.ibatis.jdbc.SQL;
 import org.springframework.core.annotation.AnnotationUtils;
 
@@ -122,11 +124,20 @@ public class UpdateBuilder {
     }
 
     public  void edit(Object obj){
+        String userId = (String) StpUtil.getLoginId();
+        SysUserInfo user = CoreBuilder.select().eq("id", userId).oneT(SysUserInfo.class);
+        String userName = user.getUserName();
         for(Field field:obj.getClass().getDeclaredFields()){
             field.setAccessible(true);
             try {
                 if(field.getName().equals(dataConfig.getUpdateTime())&&field.get(obj)==null){
                     field.set(obj,new Date());
+                }
+                if(field.getName().equals(dataConfig.getUpdateId())&&field.get(obj)==null){
+                    field.set(obj,userId);
+                }
+                if(field.getName().equals(dataConfig.getUpdateName())&&field.get(obj)==null){
+                    field.set(obj,userName);
                 }
             } catch (IllegalAccessException e) {
                 e.printStackTrace();
