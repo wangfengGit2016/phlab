@@ -1,9 +1,7 @@
 package com.ylhl.phlab.service.impl;
 
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
 import cn.hutool.core.util.IdUtil;
 import com.alibaba.fastjson.JSONArray;
@@ -101,10 +99,33 @@ public class TraPaperInfoService implements IService {
 
     public JSONObject detail(JSONObject data) {
         log.info("{}", data);
-        JSONObject res = new JSONObject();
         String paperId = data.getString("paperId");
-
-        return res;
+        TraPaperInfo bean = CoreBuilder.select().eq("paper_id", paperId).oneT(TraPaperInfo.class);
+        List<TraQuestionInfo> questionInfos = CoreBuilder.select()
+                .select("q.*,r.module_sort,r.module_name,r.question_sort,r.question_score").as("q")
+                .inner(TraPaperQuestionRel.class, "r", "q.question_id=r.question_id")
+                .eq("paper_id", paperId).list(TraQuestionInfo.class);
+        JSONObject paper = (JSONObject) JSONObject.toJSON(bean);
+        List<JSONObject> items = new ArrayList<>();
+        Map<Integer, List<JSONObject>> map = new HashMap<>();
+        questionInfos.forEach(question -> {
+            question.setScore(question.getQuestionScore());
+            question.setQuestionScore(null);
+            JSONObject questionObj = (JSONObject) JSONObject.toJSON(question);
+            questionObj.put("questionContent", questionObj.getJSONArray("questionContent").toJavaList(JSONObject.class));
+            Integer moduleSort = question.getModuleSort();
+            map.computeIfAbsent(moduleSort, k -> new ArrayList<>()).add(questionObj);
+        });
+        map.keySet().forEach(key -> {
+            JSONObject item = new JSONObject();
+            item.put("moduleSort", key);
+            item.put("moduleName", map.get(key).get(0).getString("moduleName"));
+            item.put("questionType", map.get(key).get(0).getString("questionType"));
+            item.put("questions", map.get(key));
+            items.add(item);
+        });
+        paper.put("items", items);
+        return paper;
     }
 
     @Transactional
@@ -140,7 +161,7 @@ public class TraPaperInfoService implements IService {
         return res;
     }
 
-    public TraPaperInfo paperControl(JSONObject data, String id, String method){
+    public void paperControl(JSONObject data, String id, String method){
         TraPaperInfo bean = new TraPaperInfo();
         bean.setPaperId(id);
         bean.setPaperName(data.getString("paperName"));
@@ -184,6 +205,5 @@ public class TraPaperInfoService implements IService {
             CoreBuilder.update().edit(bean);
         }
         CoreBuilder.insert().saveBatch(relInsert, new TraPaperQuestionRel());
-        return bean;
     }
 }
