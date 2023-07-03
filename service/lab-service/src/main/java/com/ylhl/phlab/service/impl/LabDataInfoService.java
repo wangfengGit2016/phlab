@@ -170,14 +170,14 @@ public class LabDataInfoService implements IService {
             JSONObject jsonBody = JSON.parseObject(excelBody);
             bean.put("bodyList", jsonBody.get("bodyList"));
         }
-        bean.remove("dataExcelHead");
-        bean.remove("dataExcelBody");
         bean.remove("excelHead");
         bean.remove("excelHead");
         bean.remove("deptMessage");
         bean.remove("fileMessage");
         dataPlan.put("plan", bean);
-
+        dataPlan.remove("dataExcelHead");
+        dataPlan.remove("dataExcelBody");
+        dataPlan.remove("fileMessage");
         return dataPlan;
     }
 
