@@ -248,8 +248,14 @@ public class LabDataInfoService implements IService {
     public JSONObject dataEval(JSONObject data) {
         log.info("{}", data);
         JSONObject res = new JSONObject();
+        String userId = (String) StpUtil.getLoginId();
+        SysUserInfo user = CoreBuilder.select().eq("id", userId).oneT(SysUserInfo.class);
+        String userName = user.getUserName();
         LabDataInfo bean = BeanUtil.toBean(data, LabDataInfo.class);
         bean.setEvalStatus(LabConstant.EVAL_STATUS_YES);
+        bean.setEvalId(userId);
+        bean.setEvalName(userName);
+        bean.setEvalTime(new Date());
         //TODO 待复查
         CoreBuilder.update().edit(bean);
         //查看所有数据是否全都评价完成
@@ -257,7 +263,8 @@ public class LabDataInfoService implements IService {
         //往评价记录表里存数据
         LabDataEvalDetail evalDetail = BeanUtil.toBean(data, LabDataEvalDetail.class);
         evalDetail.setPlanId(labDataInfo.getPlanId());
-        evalDetail.setEvalId((String) StpUtil.getLoginId());
+        evalDetail.setEvalId(userId);
+        evalDetail.setEvalName(userName);
         //TODO 评价人的姓名
         evalDetail.setEvalTime(new Date());
         evalDetail.setDataEvalId(IdUtil.fastSimpleUUID());
@@ -279,7 +286,7 @@ public class LabDataInfoService implements IService {
         failInfo.setHistoryDataId(IdUtil.fastSimpleUUID());
         CoreBuilder.insert().save(failInfo);
         //往计划附件表中存数据
-        List<LabDataFileRel> list = CoreBuilder.select().eq("data_id", data.getString("dataId")).list(LabDataFileRel.class);
+        List<LabDataFileRel> list = CoreBuilder.select().eq("business_id", data.getString("dataId")).list(LabDataFileRel.class);
         ArrayList<JSONObject> failList = new ArrayList<>();
         list.forEach(s -> {
             s.setBusinessId(failInfo.getHistoryDataId());

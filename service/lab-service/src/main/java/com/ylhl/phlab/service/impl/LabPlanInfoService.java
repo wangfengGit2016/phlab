@@ -209,8 +209,8 @@ public class LabPlanInfoService implements IService {
                 labDataInfo.setSiteId(s.get(s.size() - 2));
                 labDataInfo.setSiteName(deptHashMap.get(s.get(s.size() - 2)));
                 labDataInfo.setFileMessage("");
-                labDataInfo.setDataExcelHead(bean.getExcelHead());
-                labDataInfo.setDataExcelBody(bean.getExcelBody());
+                labDataInfo.setDataExcelHead("{\"dataHeadList\":" + data.getString("dataHeadList") + "}");
+                labDataInfo.setDataExcelBody("{\"dataBodyList\":" + data.getString("dataBodyList") + "}");
                 JSONObject json = (JSONObject) JSONObject.toJSON(labDataInfo);
                 labDataInfoList.add(json);
 
