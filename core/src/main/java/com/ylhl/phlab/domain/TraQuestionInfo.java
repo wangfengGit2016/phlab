@@ -29,7 +29,7 @@ public class TraQuestionInfo {
     @Comment("展示唯一ID")
     private Integer uniqueId;
     @Comment("分值")
-    private Integer score;
+    private String score;
     @TableField(alias = "correct_answer")
     @Comment("正确答案")
     private String correctAnswer;
@@ -67,5 +67,18 @@ public class TraQuestionInfo {
     private Date deleteTime;
     @Comment("删除状态 0：未删除 1：已删除")
     private Integer deleted;
+    @TableField(alias = "question_sort", ignore = true)
+    @Comment("题目排序")
+    private Integer questionSort;
+    @TableField(alias = "module_sort", ignore = true)
+    @Comment("模块排序")
+    private Integer moduleSort;
+    @TableField(alias = "module_name", ignore = true)
+    @Comment("模块名称")
+    private String moduleName;
+    @TableField(alias = "question_score", ignore = true)
+    @Comment("试卷内分值")
+    private String questionScore;
+
 
 }
