@@ -29,7 +29,7 @@ public class TraQuestionInfo {
     @Comment("展示唯一ID")
     private Integer uniqueId;
     @Comment("分值")
-    private String score;
+    private Integer score;
     @TableField(alias = "correct_answer")
     @Comment("正确答案")
     private String correctAnswer;
@@ -78,7 +78,7 @@ public class TraQuestionInfo {
     private String moduleName;
     @TableField(alias = "question_score", ignore = true)
     @Comment("试卷内分值")
-    private String questionScore;
+    private Integer questionScore;
 
 
 }

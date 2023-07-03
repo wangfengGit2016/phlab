@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
 
-@Api(tags = "TraQuestionInfoController", description = "人员管培-题目管理")
+@Api(tags = "TraQuestionInfoController", description = "人员管培-题库管理")
 @Slf4j
 @RestController
 @RequestMapping("/tra/question")

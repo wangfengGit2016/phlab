@@ -65,7 +65,7 @@ public class TraQuestionInfoService implements IService {
         res.put("list", elementConvert(list, "questionContent"));
         res.put("questionCount", ids.size());
         AtomicInteger totalScore = new AtomicInteger(0);
-        list.forEach(i -> totalScore.addAndGet(Integer.parseInt(i.getScore())));
+        list.forEach(i -> totalScore.addAndGet(i.getScore()));
         res.put("totalScore", totalScore);
         return res;
     }

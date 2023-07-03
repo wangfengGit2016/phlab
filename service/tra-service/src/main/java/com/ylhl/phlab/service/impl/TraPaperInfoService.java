@@ -79,6 +79,7 @@ public class TraPaperInfoService implements IService {
         log.info("{}", data);
         JSONObject res = new JSONObject();
         List<String> paperIds = data.getJSONArray("paperIds").toJavaList(String.class);
+        List<TraCourseInfo> courseInfos = CoreBuilder.select().in("public_paper_id", paperIds).list(TraCourseInfo.class);
         CoreBuilder.delete().in("paper_id", paperIds).remove(TraPaperInfo.class);
         CoreBuilder.delete().in("paper_id", paperIds).remove(TraPaperQuestionRel.class);
         CoreBuilder.delete().in("paper_id", paperIds).remove(TraPublicPaperInfo.class);

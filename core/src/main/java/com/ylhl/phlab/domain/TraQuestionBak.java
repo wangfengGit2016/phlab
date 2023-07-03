@@ -34,7 +34,7 @@ public class TraQuestionBak {
     @Comment("题目排序")
     private Integer questionSort;
     @Comment("分数")
-    private String score;
+    private Integer score;
     @TableField(alias = "module_sort")
     @Comment("模块排序")
     private Integer moduleSort;
