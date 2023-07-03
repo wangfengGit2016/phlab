@@ -106,9 +106,9 @@ public class LabDataInfoService implements IService {
         if (data.getString("uploadDataStatus").equals(LabConstant.UPLOAD_DATA_STATUS_YES)) {
             bean.setEvalStatus(LabConstant.EVAL_STATUS_NO);
         }
-        bean.setFileMessage("{\"fileList\":"+data.getString("fileList")+"}");
-        bean.setDataExcelHead("{\"dataExcelHead\":"+data.getString("dataExcelHead")+"}");
-        bean.setDataExcelBody("{\"dataExcelBody\":"+data.getString("dataExcelBody")+"}");
+        bean.setFileMessage("{\"fileList\":" + data.getString("fileList") + "}");
+        bean.setDataExcelHead("{\"dataHeadList\":" + data.getString("dataHeadList") + "}");
+        bean.setDataExcelBody("{\"dataBodyList\":" + data.getString("dataBodyList") + "}");
         String userId = (String) StpUtil.getLoginId();
         SysUserInfo user = CoreBuilder.select().eq("id", userId).oneT(SysUserInfo.class);
         String userName = user.getUserName();
@@ -136,32 +136,47 @@ public class LabDataInfoService implements IService {
         bean.put("dataFileList", dataFileList);*/
         //TODO 评价附件里去拿评价数据
         List<LabDataEvalDetail> dataEvalDetailList = CoreBuilder.select().eq("data_id", data.getString("dataId")).list(LabDataEvalDetail.class);
-        /*bean.put("dataEvalDetailList", dataEvalDetailList);
-        String dataExcelHead = bean.getString("dataExcelHead");
-        JSONObject jsonObjectHead = JSON.parseObject(dataExcelHead);
-        bean.put("dataExcelHead",jsonObjectHead.get("dataExcelHead"));
-        String dataExcelBody = bean.getString("dataExcelBody");
-        JSONObject jsonObjectBody = JSON.parseObject(dataExcelBody);
-        bean.put("dataExcelBody",jsonObjectBody.get("dataExcelBody"));*/
-        String fileMessage = bean.getString("fileMessage");
-        JSONObject jsonObject = JSON.parseObject(fileMessage);
-        bean.put("fileList",jsonObject.get("fileList"));
-        String deptMessage = bean.getString("deptMessage");
-        JSONObject jsonObject1 = JSON.parseObject(deptMessage);
-        bean.put("deptList",jsonObject1.get("deptList"));
+        bean.put("dataEvalDetailList", dataEvalDetailList);
 
-        String excelHead = bean.getString("excelHead");
-        JSONObject jsonObjectHead = JSON.parseObject(excelHead);
-        bean.put("headList",jsonObjectHead.get("headList"));
-        String excelBody = bean.getString("excelBody");
-        JSONObject jsonObjectBody = JSON.parseObject(excelBody);
-        bean.put("bodyList",jsonObjectBody.get("bodyList"));
+        if (ObjectUtil.isNotNull(bean.getString("dataExcelHead"))) {
+            String dataExcelHead = bean.getString("dataExcelHead");
+            JSONObject jsonObjectHead = JSON.parseObject(dataExcelHead);
+            bean.put("dataHeadList", jsonObjectHead.get("dataHeadList"));
+        }
 
+        if (ObjectUtil.isNotNull(bean.getString("dataExcelBody"))) {
+            String dataExcelBody = bean.getString("dataExcelBody");
+            JSONObject jsonObjectBody = JSON.parseObject(dataExcelBody);
+            bean.put("dataBodyList", jsonObjectBody.get("dataBodyList"));
+        }
+
+        if (ObjectUtil.isNotNull(bean.getString("fileMessage"))) {
+            String fileMessage = bean.getString("fileMessage");
+            JSONObject jsonObject = JSON.parseObject(fileMessage);
+            bean.put("fileList", jsonObject.get("fileList"));
+        }
+        if (ObjectUtil.isNotNull(bean.getString("deptMessage"))) {
+            String deptMessage = bean.getString("deptMessage");
+            JSONObject jsonObject1 = JSON.parseObject(deptMessage);
+            bean.put("deptList", jsonObject1.get("deptList"));
+        }
+        if (ObjectUtil.isNotNull(bean.getString("excelHead"))) {
+            String excelHead = bean.getString("excelHead");
+            JSONObject jsonHead = JSON.parseObject(excelHead);
+            bean.put("headList", jsonHead.get("headList"));
+        }
+        if (ObjectUtil.isNotNull(bean.getString("excelBody"))) {
+            String excelBody = bean.getString("excelBody");
+            JSONObject jsonBody = JSON.parseObject(excelBody);
+            bean.put("bodyList", jsonBody.get("bodyList"));
+        }
+        bean.remove("dataExcelHead");
+        bean.remove("dataExcelBody");
         bean.remove("excelHead");
         bean.remove("excelHead");
         bean.remove("deptMessage");
         bean.remove("fileMessage");
-        dataPlan.put("plan",bean);
+        dataPlan.put("plan", bean);
 
         return dataPlan;
     }
@@ -174,7 +189,7 @@ public class LabDataInfoService implements IService {
         bean.setEvalStatus(LabConstant.EVAL_STATUS_WAIT);
         //将数据对应的下发计划的评价跳转按钮打开
         JSONObject dataPlan = CoreBuilder.select().eq("data_id", data.getString("dataId")).one(LabDataInfo.class);
-        CoreBuilder.update().eq("plan_id",dataPlan.getString("planId")).set("need_eval",LabConstant.NEED_EVAL_NEED).edit(LabPlanInfo.class);
+        CoreBuilder.update().eq("plan_id", dataPlan.getString("planId")).set("need_eval", LabConstant.NEED_EVAL_NEED).edit(LabPlanInfo.class);
         //删除原来的附件
         CoreBuilder.delete().eq("business_id", data.getString("dataId")).remove(LabPlanFileRel.class);
         //往数据附件表中存数据
@@ -202,9 +217,9 @@ public class LabDataInfoService implements IService {
         });
         CoreBuilder.insert().saveBatch(labDataTypeRelList, new LabDataTypeRel());
 
-        bean.setFileMessage("{\"fileList\":"+data.getString("fileList")+"}");
-        bean.setDataExcelHead("{\"dataExcelHead\":"+data.getString("dataExcelHead")+"}");
-        bean.setDataExcelBody("{\"dataExcelBody\":"+data.getString("dataExcelBody")+"}");
+        bean.setFileMessage("{\"fileList\":" + data.getString("fileList") + "}");
+        bean.setDataExcelHead("{\"dataExcelHead\":" + data.getString("dataExcelHead") + "}");
+        bean.setDataExcelBody("{\"dataExcelBody\":" + data.getString("dataExcelBody") + "}");
         CoreBuilder.update().edit(bean);
         return res;
     }
@@ -230,14 +245,14 @@ public class LabDataInfoService implements IService {
     public JSONObject dataEval(JSONObject data) {
         log.info("{}", data);
         JSONObject res = new JSONObject();
-        LabDataInfo bean = BeanUtil.toBean(data,LabDataInfo.class);
+        LabDataInfo bean = BeanUtil.toBean(data, LabDataInfo.class);
         bean.setEvalStatus(LabConstant.EVAL_STATUS_YES);
         //TODO 待复查
         CoreBuilder.update().edit(bean);
         //查看所有数据是否全都评价完成
         LabDataInfo labDataInfo = CoreBuilder.select().eq("data_id", data.getString("dataId")).oneT(LabDataInfo.class);
         //往评价记录表里存数据
-        LabDataEvalDetail evalDetail = BeanUtil.toBean(data,LabDataEvalDetail.class);
+        LabDataEvalDetail evalDetail = BeanUtil.toBean(data, LabDataEvalDetail.class);
         evalDetail.setPlanId(labDataInfo.getPlanId());
         evalDetail.setEvalId((String) StpUtil.getLoginId());
         //TODO 评价人的姓名
@@ -245,25 +260,25 @@ public class LabDataInfoService implements IService {
         evalDetail.setDataEvalId(IdUtil.fastSimpleUUID());
         CoreBuilder.insert().save(evalDetail);
         List<LabDataInfo> dataInfoList = CoreBuilder.select().eq("plan_id", labDataInfo.getPlanId()).list(LabDataInfo.class);
-        int flag=0;
+        int flag = 0;
         for (LabDataInfo dataInfo : dataInfoList) {
-            if(!dataInfo.getEvalStatus().equals(LabConstant.EVAL_STATUS_YES)){
-                flag=1;
+            if (!dataInfo.getEvalStatus().equals(LabConstant.EVAL_STATUS_YES)) {
+                flag = 1;
                 break;
             }
         }
         //如果所有数据评价完成 将该下发计划变成不需要评价状态
-        if (flag==0){
-            CoreBuilder.update().eq("plan_id", labDataInfo.getPlanId()).set("need_eval",LabConstant.NEED_EVAL_NOT_NEED).edit(LabPlanInfo.class);
+        if (flag == 0) {
+            CoreBuilder.update().eq("plan_id", labDataInfo.getPlanId()).set("need_eval", LabConstant.NEED_EVAL_NOT_NEED).edit(LabPlanInfo.class);
         }
         //如果该考不通过 将数据保留到补考记录表中
-        LabDataFailInfo failInfo = BeanUtil.toBean(labDataInfo,LabDataFailInfo.class);
+        LabDataFailInfo failInfo = BeanUtil.toBean(labDataInfo, LabDataFailInfo.class);
         failInfo.setHistoryDataId(IdUtil.fastSimpleUUID());
         CoreBuilder.insert().save(failInfo);
         //往计划附件表中存数据
         List<LabDataFileRel> list = CoreBuilder.select().eq("data_id", data.getString("dataId")).list(LabDataFileRel.class);
         ArrayList<JSONObject> failList = new ArrayList<>();
-        list.forEach(s ->{
+        list.forEach(s -> {
             s.setBusinessId(failInfo.getHistoryDataId());
             failList.add((JSONObject) JSONObject.toJSON(s));
         });

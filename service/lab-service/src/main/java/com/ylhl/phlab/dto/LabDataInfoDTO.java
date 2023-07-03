@@ -63,4 +63,6 @@ public class LabDataInfoDTO extends Page<LabDataInfoDTO> {
     private String fileMessage;
     private List<JSONObject> fileList;
     private List<JSONObject> typeList;
+    private List<JSONObject> dataHeadList;
+    private List<JSONObject> dataBodyList;
 }

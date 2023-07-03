@@ -78,4 +78,9 @@ public class LabPlanInfoController {
     public JSONObject typeResult(@RequestBody LabPlanTypeRelDTO param) {
         return labPlanInfoService.typeResult((JSONObject) JSONObject.toJSON(param));
     }
+    @ApiOperation("下发计划文件预览")
+    @PostMapping(value = "/fileToPdf")
+    public JSONObject fileToPdf(@RequestBody LabPlanInfoDTO param) {
+        return labPlanInfoService.fileToPdf((JSONObject) JSONObject.toJSON(param));
+    }
 }

@@ -26,9 +26,10 @@ import com.ylhl.phlab.mapper.CoreBuilder;
 import com.ylhl.phlab.mapper.Page;
 import org.apache.commons.beanutils.BeanUtils;
 import org.apache.commons.lang.StringUtils;
-import org.apache.tomcat.jni.FileInfo;
+
 import org.jsoup.select.Evaluator;
 import org.springframework.stereotype.Service;
+
 
 @Slf4j
 @Service("LabPlanInfoService")
@@ -118,12 +119,12 @@ public class LabPlanInfoService implements IService {
         } else {
             bean.setNeedEval("1");
         }
-        bean.setFileMessage("{\"fileList\":"+data.getString("fileList")+"}");
-        bean.setDeptMessage("{\"deptList\":"+data.getString("deptList")+"}");
+        bean.setFileMessage("{\"fileList\":" + data.getString("fileList") + "}");
+        bean.setDeptMessage("{\"deptList\":" + data.getString("deptList") + "}");
         /*bean.setFileMessage(data.getString("fileList"));
         bean.setDeptMessage(data.getString("deptList"));*/
-        bean.setExcelHead("{\"headList\":"+data.getString("headList")+"}");
-        bean.setExcelBody("{\"bodyList\":"+data.getString("bodyList")+"}");
+        bean.setExcelHead("{\"headList\":" + data.getString("headList") + "}");
+        bean.setExcelBody("{\"bodyList\":" + data.getString("bodyList") + "}");
         res.put("status", CoreBuilder.insert().save(bean));
 
         //往计划附件表中存数据
@@ -157,7 +158,7 @@ public class LabPlanInfoService implements IService {
             String deptName = deptHashMap.get(s.get(s.size() - 1));
             String siteName = deptHashMap.get(s.get(s.size() - 2));
             String cityName = deptHashMap.get(s.get(s.size() - 3));
-            if(!hashSet.contains(s.get(s.size() - 2))){
+            if (!hashSet.contains(s.get(s.size() - 2))) {
                 //往计划场地关联表中存数据
                 LabPlanSiteRel labPlanSiteRel = new LabPlanSiteRel();
                 labPlanSiteRel.setSiteId(s.get(s.size() - 2));
@@ -179,11 +180,10 @@ public class LabPlanInfoService implements IService {
             //往计划场地科室记录表中存数据
             LabPlanSiteDeptRel labPlanSiteDeptRel1 = new LabPlanSiteDeptRel();
             labPlanSiteDeptRel1.setPlanId(bean.getPlanId());
-            labPlanSiteDeptRel1.setSiteDeptName(cityName+siteName + deptName);
+            labPlanSiteDeptRel1.setSiteDeptName(cityName + siteName + deptName);
             JSONObject json2 = (JSONObject) JSONObject.toJSON(labPlanSiteDeptRel1);
             labPlanSiteDeptList1.add(json2);
         }
-
 
 
         CoreBuilder.insert().saveBatch(labPlanSiteList, new LabPlanSiteRel());
@@ -269,10 +269,10 @@ public class LabPlanInfoService implements IService {
         } else {
             bean.setNeedEval("1");
         }
-        bean.setFileMessage("{\"fileList\":"+data.getString("fileList")+"}");
-        bean.setDeptMessage("{\"deptList\":"+data.getString("deptList")+"}");
-        bean.setExcelHead("{\"headList\":"+data.getString("headList")+"}");
-        bean.setExcelBody("{\"bodyList\":"+data.getString("bodyList")+"}");
+        bean.setFileMessage("{\"fileList\":" + data.getString("fileList") + "}");
+        bean.setDeptMessage("{\"deptList\":" + data.getString("deptList") + "}");
+        bean.setExcelHead("{\"headList\":" + data.getString("headList") + "}");
+        bean.setExcelBody("{\"bodyList\":" + data.getString("bodyList") + "}");
         CoreBuilder.update().edit(bean);
 
         //往计划附件表中存数据
@@ -306,7 +306,7 @@ public class LabPlanInfoService implements IService {
             String deptName = deptHashMap.get(s.get(s.size() - 1));
             String siteName = deptHashMap.get(s.get(s.size() - 2));
             String cityName = deptHashMap.get(s.get(s.size() - 3));
-            if(!hashSet.contains(s.get(s.size() - 2))){
+            if (!hashSet.contains(s.get(s.size() - 2))) {
                 //往计划场地关联表中存数据
                 LabPlanSiteRel labPlanSiteRel = new LabPlanSiteRel();
                 labPlanSiteRel.setSiteId(s.get(s.size() - 2));
@@ -328,11 +328,10 @@ public class LabPlanInfoService implements IService {
             //往计划场地科室记录表中存数据
             LabPlanSiteDeptRel labPlanSiteDeptRel1 = new LabPlanSiteDeptRel();
             labPlanSiteDeptRel1.setPlanId(bean.getPlanId());
-            labPlanSiteDeptRel1.setSiteDeptName(cityName+siteName + deptName);
+            labPlanSiteDeptRel1.setSiteDeptName(cityName + siteName + deptName);
             JSONObject json2 = (JSONObject) JSONObject.toJSON(labPlanSiteDeptRel1);
             labPlanSiteDeptList1.add(json2);
         }
-
 
 
         CoreBuilder.insert().saveBatch(labPlanSiteList, new LabPlanSiteRel());
@@ -364,24 +363,28 @@ public class LabPlanInfoService implements IService {
         JSONObject bean = CoreBuilder.select().eq("plan_id", data.getString("planId")).one(LabPlanInfo.class);
         String fileMessage = bean.getString("fileMessage");
         JSONObject jsonObject = JSON.parseObject(fileMessage);
-        bean.put("fileList",jsonObject.get("fileList"));
+        bean.put("fileList", jsonObject.get("fileList"));
+
         String deptMessage = bean.getString("deptMessage");
         JSONObject jsonObject1 = JSON.parseObject(deptMessage);
-        bean.put("deptList",jsonObject1.get("deptList"));
-
-        String excelHead = bean.getString("excelHead");
-        JSONObject jsonObjectHead = JSON.parseObject(excelHead);
-        bean.put("headList",jsonObjectHead.get("headList"));
-        String excelBody = bean.getString("excelBody");
-        JSONObject jsonObjectBody = JSON.parseObject(excelBody);
-        bean.put("bodyList",jsonObjectBody.get("bodyList"));
+        bean.put("deptList", jsonObject1.get("deptList"));
+        if (ObjectUtil.isNotNull(bean.getString("excelHead"))) {
+            String excelHead = bean.getString("excelHead");
+            JSONObject jsonObjectHead = JSON.parseObject(excelHead);
+            bean.put("headList", jsonObjectHead.get("headList"));
+        }
+        if (ObjectUtil.isNotNull(bean.getString("excelBody"))) {
+            String excelBody = bean.getString("excelBody");
+            JSONObject jsonObjectBody = JSON.parseObject(excelBody);
+            bean.put("bodyList", jsonObjectBody.get("bodyList"));
+        }
 
         bean.remove("excelHead");
         bean.remove("excelHead");
         bean.remove("deptMessage");
         bean.remove("fileMessage");
         List<LabPlanSiteDeptRel> siteDeptList = CoreBuilder.select().eq("plan_id", data.getString("planId")).list(LabPlanSiteDeptRel.class);
-        bean.put("siteDeptList",siteDeptList);
+        bean.put("siteDeptList", siteDeptList);
         /*//去计划区域关联表中拿区域信息
         List<LabPlanSiteRel> siteList = CoreBuilder.select().eq("plan_id", data.getString("planId")).list(LabPlanSiteRel.class);
         bean.put("siteList", siteList);
@@ -470,5 +473,9 @@ public class LabPlanInfoService implements IService {
         res.put("judgList", judgList);
         res.put("fluoList", fluoList);
         return res;
+    }
+
+    public JSONObject fileToPdf(JSONObject data) {
+        return null;
     }
 }
