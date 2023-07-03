@@ -66,6 +66,14 @@ public class TraPaperInfoController {
 
         return traPaperInfoService.detail((JSONObject) JSONObject.toJSON(param));
     }
+
+    @ApiOperation("试卷详情")
+    @PostMapping(value="/publicDetail")
+    public JSONObject publicDetail(@RequestBody TraPaperInfoParam param){
+
+        return traPaperInfoService.publicDetail((JSONObject) JSONObject.toJSON(param));
+    }
+
     @ApiOperation("试卷发布")
     @PostMapping(value="/publish")
     public JSONObject publish(@RequestBody TraPaperInfoParam param){

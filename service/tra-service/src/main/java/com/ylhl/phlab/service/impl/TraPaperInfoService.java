@@ -106,7 +106,6 @@ public class TraPaperInfoService implements IService {
                 .inner(TraPaperQuestionRel.class, "r", "q.question_id=r.question_id")
                 .eq("paper_id", paperId).list(TraQuestionInfo.class);
         JSONObject paper = (JSONObject) JSONObject.toJSON(bean);
-        List<JSONObject> items = new ArrayList<>();
         Map<Integer, List<JSONObject>> map = new HashMap<>();
         questionInfos.forEach(question -> {
             question.setScore(question.getQuestionScore());
@@ -116,17 +115,28 @@ public class TraPaperInfoService implements IService {
             Integer moduleSort = question.getModuleSort();
             map.computeIfAbsent(moduleSort, k -> new ArrayList<>()).add(questionObj);
         });
-        map.keySet().forEach(key -> {
-            JSONObject item = new JSONObject();
-            item.put("moduleSort", key);
-            item.put("moduleName", map.get(key).get(0).getString("moduleName"));
-            item.put("questionType", map.get(key).get(0).getString("questionType"));
-            item.put("questions", map.get(key));
-            items.add(item);
-        });
-        paper.put("items", items);
+        paper.put("items", questionItems(map));
         return paper;
     }
+
+    public JSONObject publicDetail(JSONObject data) {
+        log.info("{}", data);
+        String paperId = data.getString("paperId");
+        TraPublicPaperInfo bean = CoreBuilder.select().eq("paper_id", paperId).oneT(TraPublicPaperInfo.class);
+        List<TraQuestionBak> questionInfos = CoreBuilder.select().eq("public_paper_id", paperId).list(TraQuestionBak.class);
+        JSONObject paper = (JSONObject) JSONObject.toJSON(bean);
+        Map<Integer, List<JSONObject>> map = new HashMap<>();
+        questionInfos.forEach(question -> {
+            JSONObject questionObj = (JSONObject) JSONObject.toJSON(question);
+            questionObj.put("questionContent", questionObj.getJSONArray("questionContent").toJavaList(JSONObject.class));
+            Integer moduleSort = question.getModuleSort();
+            map.computeIfAbsent(moduleSort, k -> new ArrayList<>()).add(questionObj);
+        });
+        paper.put("items", questionItems(map));
+        return paper;
+    }
+
+
 
     @Transactional
     public JSONObject publish(JSONObject data) {
@@ -205,5 +215,18 @@ public class TraPaperInfoService implements IService {
             CoreBuilder.update().edit(bean);
         }
         CoreBuilder.insert().saveBatch(relInsert, new TraPaperQuestionRel());
+    }
+
+    private List<JSONObject> questionItems(Map<Integer, List<JSONObject>> map){
+        List<JSONObject> items = new ArrayList<>();
+        map.keySet().forEach(key -> {
+            JSONObject item = new JSONObject();
+            item.put("moduleSort", key);
+            item.put("moduleName", map.get(key).get(0).getString("moduleName"));
+            item.put("questionType", map.get(key).get(0).getString("questionType"));
+            item.put("questions", map.get(key));
+            items.add(item);
+        });
+        return items;
     }
 }

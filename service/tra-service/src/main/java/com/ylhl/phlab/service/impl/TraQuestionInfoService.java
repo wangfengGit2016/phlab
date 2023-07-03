@@ -1,15 +1,12 @@
 package com.ylhl.phlab.service.impl;
 
-import cn.dev33.satoken.stp.StpUtil;
 import cn.hutool.core.bean.BeanUtil;
-
 import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
 import cn.hutool.core.util.IdUtil;
 import com.alibaba.fastjson.JSONObject;
-import com.ylhl.phlab.domain.SysUserInfo;
 import com.ylhl.phlab.domain.TraPaperQuestionRel;
 import com.ylhl.phlab.util.UniqueIdUtil;
 import com.ylhl.phlab.util.UserUtil;
