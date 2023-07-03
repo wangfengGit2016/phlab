@@ -1,14 +1,12 @@
 package com.ylhl.phlab.service.impl;
 
-import cn.dev33.satoken.stp.StpUtil;
 import cn.hutool.core.bean.BeanUtil;
-
 import java.util.*;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
 import cn.hutool.core.util.IdUtil;
 import com.alibaba.fastjson.JSONObject;
-import com.ylhl.phlab.domain.SysUserInfo;
 import com.ylhl.phlab.domain.TraPaperQuestionRel;
 import com.ylhl.phlab.util.UniqueIdUtil;
 import com.ylhl.phlab.util.UserUtil;
@@ -55,14 +53,20 @@ public class TraQuestionInfoService implements IService {
         String id = data.getString("unique_id");
         String type = data.getString("questionType");
         String title = data.getString("questionTitle");
+        List<String> ids = data.getJSONArray("questionIds").toJavaList(String.class);
         List<TraQuestionInfo> list = CoreBuilder.select()
                 .like(StringUtils.isNotBlank(id), "unique_id", id)
                 .like(StringUtils.isNotBlank(title), "question_title", title)
-                .eq(StringUtils.isNotBlank(score), "score", score)
+                .like(StringUtils.isNotBlank(score), "score", score)
                 .like(StringUtils.isNotBlank(createName), "create_name", createName)
                 .eq(StringUtils.isNotBlank(type), "question_type", type)
+                .in(!ids.isEmpty(),"question_id", ids)
                 .desc("create_time").list(TraQuestionInfo.class);
         res.put("list", elementConvert(list, "questionContent"));
+        res.put("questionCount", ids.size());
+        AtomicInteger totalScore = new AtomicInteger(0);
+        list.forEach(i -> totalScore.addAndGet(Integer.parseInt(i.getScore())));
+        res.put("totalScore", totalScore);
         return res;
     }
 

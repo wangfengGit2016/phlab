@@ -61,4 +61,5 @@ public class TraQuestionInfoController {
 
         return traQuestionInfoService.detail((JSONObject) JSONObject.toJSON(param));
     }
+
 }

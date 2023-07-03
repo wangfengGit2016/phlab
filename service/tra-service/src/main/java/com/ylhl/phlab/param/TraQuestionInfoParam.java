@@ -19,7 +19,7 @@ public class TraQuestionInfoParam extends Page<TraQuestionInfoParam> {
     @ApiModelProperty("题目ID")
     @TableField(alias = "question_id")
     private String questionId;
-    @ApiModelProperty("批量删除题目id")
+    @ApiModelProperty("批量题目id")
     private List<String> questionIds;
     @ApiModelProperty("题干")
     @TableField(alias = "question_title")
